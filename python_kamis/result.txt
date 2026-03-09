@@ -1,0 +1,32 @@
+﻿====================================
+Evaluating simple.graph
+====================================
+Nodes: 6, Edges: 7
+
+--- Python Implementations Runtimes ---
+1. Graph Load Time: 0.154 ms
+2. Greedy MIS Time: 0.019 ms   | Output Size: 3
+3. Local Search Time: 0.021 ms | Output Size: 3
+
+--- Time Complexity Ratios: C++ vs Python ---
+1. Greedy MIS (C++): O(V + E) using bucket queues.
+2. Greedy MIS (Py) : O((V + E) log V) using heapq. Expected ratio: Python is a factor of ~log V slower asymptotically + 10x-50x interpreted overhead.
+   -> Why? Python doesn't have a native O(1) bucket-decrease-key queue, but heaps simulate it efficiently.
+3. Local Search (C++): Uses Bitsets and cache-friendly precomputed tight degrees.
+4. Local Search (Py) : Unoptimized arrays and hash lookups. Expected ratio: Python is a factor of 100x+ slower due to memory indirection overheads.
+====================================
+Evaluating weight_nodes.graph
+====================================
+Nodes: 6, Edges: 7
+
+--- Python Implementations Runtimes ---
+1. Graph Load Time: 0.170 ms
+2. Greedy MIS Time: 0.010 ms   | Output Size: 3
+3. Local Search Time: 0.011 ms | Output Size: 3
+
+--- Time Complexity Ratios: C++ vs Python ---
+1. Greedy MIS (C++): O(V + E) using bucket queues.
+2. Greedy MIS (Py) : O((V + E) log V) using heapq. Expected ratio: Python is a factor of ~log V slower asymptotically + 10x-50x interpreted overhead.
+   -> Why? Python doesn't have a native O(1) bucket-decrease-key queue, but heaps simulate it efficiently.
+3. Local Search (C++): Uses Bitsets and cache-friendly precomputed tight degrees.
+4. Local Search (Py) : Unoptimized arrays and hash lookups. Expected ratio: Python is a factor of 100x+ slower due to memory indirection overheads.
