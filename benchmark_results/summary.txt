@@ -1,0 +1,35 @@
+======================================================================
+BENCHMARK SUMMARY
+======================================================================
+
+--- Family: camouflaged_clique ---
+  Exact_NX_Complement           : avg_size=4.7, avg_recall=1.000, avg_time=0.000s (6 instances)
+  Greedy_MaxDegRemoval          : avg_size=4.7, avg_recall=1.000, avg_time=0.000s (6 instances)
+  Greedy_MinDeg                 : avg_size=4.7, avg_recall=1.000, avg_time=0.000s (6 instances)
+  LocalSearch_12swap            : avg_size=4.0, avg_recall=0.917, avg_time=0.001s (6 instances)
+  SimulatedAnnealing            : avg_size=4.7, avg_recall=1.000, avg_time=0.055s (6 instances)
+  Spectral_Planted              : avg_size=3.5, avg_recall=0.500, avg_time=0.000s (6 instances)
+
+--- Family: erdos_renyi_planted ---
+  Exact_NX_Complement           : avg_size=6.3, avg_recall=0.375, avg_time=0.000s (6 instances)
+  Greedy_MaxDegRemoval          : avg_size=6.2, avg_recall=0.583, avg_time=0.000s (6 instances)
+  Greedy_MinDeg                 : avg_size=6.3, avg_recall=0.500, avg_time=0.000s (6 instances)
+  LocalSearch_12swap            : avg_size=5.7, avg_recall=0.375, avg_time=0.001s (6 instances)
+  SimulatedAnnealing            : avg_size=6.3, avg_recall=0.500, avg_time=0.046s (6 instances)
+  Spectral_Planted              : avg_size=3.3, avg_recall=0.104, avg_time=0.001s (6 instances)
+
+--- Family: geometric_planted ---
+  Exact_NX_Complement           : avg_size=4.7, avg_recall=0.917, avg_time=0.000s (6 instances)
+  Greedy_MaxDegRemoval          : avg_size=4.7, avg_recall=0.667, avg_time=0.000s (6 instances)
+  Greedy_MinDeg                 : avg_size=4.7, avg_recall=0.667, avg_time=0.000s (6 instances)
+  LocalSearch_12swap            : avg_size=4.5, avg_recall=0.958, avg_time=0.000s (6 instances)
+  SimulatedAnnealing            : avg_size=4.7, avg_recall=0.667, avg_time=0.050s (6 instances)
+  Spectral_Planted              : avg_size=4.5, avg_recall=0.667, avg_time=0.001s (6 instances)
+
+--- Family: multi_clique_core ---
+  Exact_NX_Complement           : avg_size=4.7, avg_recall=1.000, avg_time=0.000s (6 instances)
+  Greedy_MaxDegRemoval          : avg_size=4.7, avg_recall=1.000, avg_time=0.000s (6 instances)
+  Greedy_MinDeg                 : avg_size=4.7, avg_recall=1.000, avg_time=0.000s (6 instances)
+  LocalSearch_12swap            : avg_size=4.7, avg_recall=1.000, avg_time=0.001s (6 instances)
+  SimulatedAnnealing            : avg_size=4.7, avg_recall=1.000, avg_time=0.051s (6 instances)
+  Spectral_Planted              : avg_size=3.7, avg_recall=0.667, avg_time=0.001s (6 instances)
