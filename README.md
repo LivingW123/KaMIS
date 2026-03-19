@@ -1,6 +1,23 @@
-# KaMIS v3.0 #
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/29cd8870a6b041948dbf001d0f427f83)](https://app.codacy.com/gh/KarlsruheMIS/KaMIS?utm_source=github.com&utm_medium=referral&utm_content=KarlsruheMIS/KaMIS&utm_campaign=Badge_Grade_Dashboard)
+# KaMIS v3.1 — Karlsruhe Maximum Independent Sets
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![C++11/14](https://img.shields.io/badge/C++-11%2F14-blue.svg?style=flat)
+[![CMake](https://img.shields.io/badge/build-CMake-blue)](https://cmake.org/)
+[![Linux](https://img.shields.io/badge/platform-Linux-blue)](https://github.com/KarlsruheMIS/KaMIS)
+[![macOS](https://img.shields.io/badge/platform-macOS-blue)](https://github.com/KarlsruheMIS/KaMIS)
+[![Homebrew](https://img.shields.io/badge/homebrew-available-orange)](https://github.com/KarlsruheMIS/homebrew-kamis)
+[![GitHub Stars](https://img.shields.io/github/stars/KarlsruheMIS/KaMIS)](https://github.com/KarlsruheMIS/KaMIS/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/KarlsruheMIS/KaMIS)](https://github.com/KarlsruheMIS/KaMIS/issues)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/KarlsruheMIS/KaMIS)](https://github.com/KarlsruheMIS/KaMIS/commits)
+[![arXiv](https://img.shields.io/badge/arXiv-1509.00764-b31b1b)](https://arxiv.org/abs/1509.00764)
+[![arXiv](https://img.shields.io/badge/arXiv-1708.06151-b31b1b)](https://arxiv.org/abs/1708.06151)
+[![arXiv](https://img.shields.io/badge/arXiv-1810.10834-b31b1b)](https://arxiv.org/abs/1810.10834)
+[![arXiv](https://img.shields.io/badge/arXiv-2008.05180-b31b1b)](https://arxiv.org/abs/2008.05180)
+[![arXiv](https://img.shields.io/badge/arXiv-2208.13645-b31b1b)](https://arxiv.org/abs/2208.13645)
+[![Agent-Ready](https://img.shields.io/badge/agent--ready-yes-brightgreen)](https://github.com/KarlsruheMIS/KaMIS)
+[![Heidelberg University](https://img.shields.io/badge/Heidelberg-University-red)](https://www.uni-heidelberg.de)
+
+Part of the [KarlsruheMIS](https://github.com/KarlsruheMIS) organization.
 
 ## Description ##
 This is the open source project KaMIS - Karlsruhe Maximum Independent Sets. Given a graph G=(V,E), the goal of the maximum independent set problem is to compute a maximum cardinality set of vertices I, such that no vertices in the set are adjacent to one another. Such a set is called a maximum independent set. The problem is NP-hard and particularly difficult to solve in large sparse graphs. 
@@ -11,11 +28,20 @@ This is the open source project KaMIS - Karlsruhe Maximum Independent Sets. Give
   width="700" height="245">
 </p>
 
+## Install via Homebrew
 
-Main project site:
-<http://KarlsruheMIS.github.io>
+```console
+brew install KarlsruheMIS/kamis/kamis
+```
 
-## Installation ##
+Then run directly:
+```console
+redumis network.graph --output independent_set.txt --time_limit 60 --console_log
+```
+
+**Note:** When installed via Homebrew, `graphchecker` is renamed to `kamis_graphchecker` to avoid name clashes.
+
+## Installation (from source) ##
 As a first step, please run *git submodule update  --init --recursive*. Then compile the source by running *compile_withcmake.sh*. The binaries can then be found in the folder *deploy*.  To compile the programs you need g++, OpenMP and cmake installed. 
 
 To convert a graph from DIMACS to METIS format or sort its edges you can use the python scripts in the *misc* folder.
@@ -33,7 +59,7 @@ Furthermore, the framework contains tools to make life a little bit easier:
 * sort_adjacencies -- takes a graph file and sorts the neighborhoods of vertices (this is required by our algorithms) 
 * graphchecker -- check if the graph file you gave to algorithm is in the correct format
 
-## NEW in v3.0: 
+## NEW in v3.0:
 *mmwis (Memetic Maxmimum Weight Independent Set):* Our iterative reduce and evolution algorithm to solve the maximum weight independent set problem.
 
 *struction:* Our new branch and reduce algorithm using increasing transformations. 
@@ -279,9 +305,9 @@ If you use the weighted independents set algorithms, please also cite the follow
 }
 ```
 
-if you use struction, please also cite the following: 
+If you use struction, please also cite the following:
 ```
-@article{DBLP:journals/corr/abs-2008-05180,
+@inproceedings{DBLP:conf/alenex/GellnerLSSZ21,
   author       = {Alexander Gellner and
                   Sebastian Lamm and
                   Christian Schulz and
@@ -289,41 +315,34 @@ if you use struction, please also cite the following:
                   Bogd{\'{a}}n Zav{\'{a}}lnij},
   title        = {Boosting Data Reduction for the Maximum Weight Independent Set Problem
                   Using Increasing Transformations},
-  journal      = {CoRR},
-  volume       = {abs/2008.05180},
-  year         = {2020},
-  url          = {https://arxiv.org/abs/2008.05180},
-  eprinttype    = {arXiv},
-  eprint       = {2008.05180},
-  timestamp    = {Sun, 16 Aug 2020 17:19:29 +0200},
-  biburl       = {https://dblp.org/rec/journals/corr/abs-2008-05180.bib},
+  booktitle    = {Proceedings of the 23rd Symposium on Algorithm Engineering and Experiments,
+                  {ALENEX} 2021, Virtual Conference, January 10-11, 2021},
+  pages        = {128--142},
+  publisher    = {{SIAM}},
+  year         = {2021},
+  url          = {https://doi.org/10.1137/1.9781611976472.10},
+  doi          = {10.1137/1.9781611976472.10},
+  biburl       = {https://dblp.org/rec/conf/alenex/GellnerLSSZ21.bib},
   bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 ```
 
-if you use mmwis, please also cite the following: 
+If you use mmwis, please also cite the following:
 ```
-@inproceedings{dblp:conf/gecco/grossmannl0s23,
-  author       = {ernestine gro{\ss}mann and
-                  sebastian lamm and
-                  christian schulz and
-                  darren strash},
-  editor       = {sara silva and
-                  lu{\'{\i}}s paquete},
-  title        = {finding near-optimal weight independent sets at scale},
-  booktitle    = {proceedings of the genetic and evolutionary computation conference,
-                  {gecco} 2023, lisbon, portugal, july 15-19, 2023},
-  pages        = {293--302},
-  publisher    = {{acm}},
-  year         = {2023},
-  url          = {https://doi.org/10.1145/3583131.3590353},
-  doi          = {10.1145/3583131.3590353},
-  timestamp    = {fri, 02 aug 2024 15:50:42 +0200},
-  biburl       = {https://dblp.org/rec/conf/gecco/grossmannl0s23.bib},
+@article{DBLP:journals/jgaa/GrossmannLSS24,
+  author       = {Ernestine Gro{\ss}mann and
+                  Sebastian Lamm and
+                  Christian Schulz and
+                  Darren Strash},
+  title        = {Finding Near-Optimal Weight Independent Sets at Scale},
+  journal      = {J. Graph Algorithms Appl.},
+  volume       = {28},
+  number       = {1},
+  pages        = {439--473},
+  year         = {2024},
+  url          = {https://doi.org/10.7155/jgaa.v28i1.2997},
+  doi          = {10.7155/JGAA.V28I1.2997},
+  biburl       = {https://dblp.org/rec/journals/jgaa/GrossmannLSS24.bib},
   bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 ```
-
-
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FKarlsruheMIS%2FKaMIS.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FKarlsruheMIS%2FKaMIS?ref=badge_large)
