@@ -1,0 +1,190 @@
+======================================================================
+COMBINED BENCHMARK SUMMARY
+======================================================================
+
+--- Family: erdos_renyi ---
+  Exact_NX                      : avg_size=8.6, avg_recall=0.642, avg_time=0.002s (12 instances)
+  Greedy_MinDeg                 : avg_size=10.3, avg_recall=0.599, avg_time=0.001s (15 instances)
+  KaMIS_online_mis              : avg_size=10.7, avg_recall=0.558, avg_time=40.010s (15 instances)
+  KaMIS_redumis                 : avg_size=10.9, avg_recall=0.675, avg_time=30.178s (15 instances)
+  LocalSearch                   : avg_size=10.3, avg_recall=0.592, avg_time=0.001s (15 instances)
+  Spectral                      : avg_size=6.7, avg_recall=0.355, avg_time=0.009s (15 instances)
+
+--- Family: multi_clique_core ---
+  Exact_NX                      : avg_size=9.3, avg_recall=1.000, avg_time=0.001s (9 instances)
+  Greedy_MinDeg                 : avg_size=9.3, avg_recall=1.000, avg_time=0.000s (9 instances)
+  KaMIS_online_mis              : avg_size=9.2, avg_recall=0.986, avg_time=31.119s (9 instances)
+  KaMIS_redumis                 : avg_size=9.3, avg_recall=1.000, avg_time=9.584s (9 instances)
+  LocalSearch                   : avg_size=9.3, avg_recall=1.000, avg_time=0.001s (9 instances)
+  Spectral                      : avg_size=5.3, avg_recall=0.422, avg_time=0.001s (9 instances)
+
+======================================================================
+PER-INSTANCE DETAIL
+======================================================================
+Instance                                 Solver                  Size  Recall  Time(s) Valid
+------------------------------------------------------------------------------------------
+erdos_renyi_n100_h10_p0.2_s123           Greedy_MinDeg             18   0.400    0.001     Y
+erdos_renyi_n100_h10_p0.2_s123           LocalSearch               19   0.300    0.002     Y
+erdos_renyi_n100_h10_p0.2_s123           Spectral                  12   0.200    0.002     Y
+erdos_renyi_n100_h10_p0.2_s123           KaMIS_online_mis          19   0.300   40.008     Y
+erdos_renyi_n100_h10_p0.2_s123           KaMIS_redumis             19   0.300   27.790     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n100_h10_p0.2_s42            Greedy_MinDeg             20   0.400    0.001     Y
+erdos_renyi_n100_h10_p0.2_s42            LocalSearch               20   0.400    0.002     Y
+erdos_renyi_n100_h10_p0.2_s42            Spectral                  10   0.200    0.002     Y
+erdos_renyi_n100_h10_p0.2_s42            KaMIS_online_mis          21   0.300   40.009     Y
+erdos_renyi_n100_h10_p0.2_s42            KaMIS_redumis             21   0.400   26.737     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n100_h10_p0.2_s456           Greedy_MinDeg             19   0.300    0.001     Y
+erdos_renyi_n100_h10_p0.2_s456           LocalSearch               19   0.300    0.002     Y
+erdos_renyi_n100_h10_p0.2_s456           Spectral                  15   0.400    0.014     Y
+erdos_renyi_n100_h10_p0.2_s456           KaMIS_online_mis          20   0.300   40.009     Y
+erdos_renyi_n100_h10_p0.2_s456           KaMIS_redumis             20   0.300   32.109     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n30_h5_p0.5_s123             Greedy_MinDeg              6   0.600    0.000     Y
+erdos_renyi_n30_h5_p0.5_s123             LocalSearch                6   0.600    0.000     Y
+erdos_renyi_n30_h5_p0.5_s123             Spectral                   5   0.600    0.001     Y
+erdos_renyi_n30_h5_p0.5_s123             Exact_NX                   6   0.400    0.001     Y
+erdos_renyi_n30_h5_p0.5_s123             KaMIS_online_mis           6   0.400   40.009     Y
+erdos_renyi_n30_h5_p0.5_s123             KaMIS_redumis              6   0.800   21.076     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n30_h5_p0.5_s42              Greedy_MinDeg              6   0.400    0.000     Y
+erdos_renyi_n30_h5_p0.5_s42              LocalSearch                6   0.400    0.001     Y
+erdos_renyi_n30_h5_p0.5_s42              Spectral                   4   0.200    0.001     Y
+erdos_renyi_n30_h5_p0.5_s42              Exact_NX                   6   0.000    0.001     Y
+erdos_renyi_n30_h5_p0.5_s42              KaMIS_online_mis           6   0.400   40.008     Y
+erdos_renyi_n30_h5_p0.5_s42              KaMIS_redumis              6   0.600   19.915     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n30_h5_p0.5_s456             Greedy_MinDeg              6   0.200    0.000     Y
+erdos_renyi_n30_h5_p0.5_s456             LocalSearch                6   0.200    0.000     Y
+erdos_renyi_n30_h5_p0.5_s456             Spectral                   3   0.000    0.001     Y
+erdos_renyi_n30_h5_p0.5_s456             Exact_NX                   7   0.400    0.001     Y
+erdos_renyi_n30_h5_p0.5_s456             KaMIS_online_mis           7   0.400   40.009     Y
+erdos_renyi_n30_h5_p0.5_s456             KaMIS_redumis              7   0.400   20.802     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n50_h10_p0.5_s123            Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.5_s123            LocalSearch               10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.5_s123            Spectral                   4   0.200    0.001     Y
+erdos_renyi_n50_h10_p0.5_s123            Exact_NX                  10   1.000    0.004     Y
+erdos_renyi_n50_h10_p0.5_s123            KaMIS_online_mis           9   0.900   40.008     Y
+erdos_renyi_n50_h10_p0.5_s123            KaMIS_redumis             10   1.000   28.963     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n50_h10_p0.5_s42             Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.5_s42             LocalSearch               10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.5_s42             Spectral                   4   0.100    0.109     Y
+erdos_renyi_n50_h10_p0.5_s42             Exact_NX                  10   0.900    0.004     Y
+erdos_renyi_n50_h10_p0.5_s42             KaMIS_online_mis          10   0.900   40.027     Y
+erdos_renyi_n50_h10_p0.5_s42             KaMIS_redumis             10   0.900   32.793     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n50_h10_p0.5_s456            Greedy_MinDeg              7   0.400    0.001     Y
+erdos_renyi_n50_h10_p0.5_s456            LocalSearch                7   0.400    0.001     Y
+erdos_renyi_n50_h10_p0.5_s456            Spectral                   3   0.000    0.001     Y
+erdos_renyi_n50_h10_p0.5_s456            Exact_NX                  10   1.000    0.004     Y
+erdos_renyi_n50_h10_p0.5_s456            KaMIS_online_mis          10   1.000   40.010     Y
+erdos_renyi_n50_h10_p0.5_s456            KaMIS_redumis             10   1.000   22.426     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n50_h10_p0.8_s123            Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s123            LocalSearch               10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s123            Spectral                  10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s123            Exact_NX                  10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s123            KaMIS_online_mis          10   1.000   40.008     Y
+erdos_renyi_n50_h10_p0.8_s123            KaMIS_redumis             10   1.000   39.524     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n50_h10_p0.8_s42             Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s42             LocalSearch               10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s42             Spectral                  10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s42             Exact_NX                  10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s42             KaMIS_online_mis          10   1.000   40.011     Y
+erdos_renyi_n50_h10_p0.8_s42             KaMIS_redumis             10   1.000   40.225     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n50_h10_p0.8_s456            Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s456            LocalSearch               10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s456            Spectral                  10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s456            Exact_NX                  10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s456            KaMIS_online_mis           9   0.900   40.009     Y
+erdos_renyi_n50_h10_p0.8_s456            KaMIS_redumis             10   1.000   37.151     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n50_h7_p0.5_s123             Greedy_MinDeg              7   0.571    0.001     Y
+erdos_renyi_n50_h7_p0.5_s123             LocalSearch                7   0.571    0.001     Y
+erdos_renyi_n50_h7_p0.5_s123             Spectral                   5   0.286    0.001     Y
+erdos_renyi_n50_h7_p0.5_s123             Exact_NX                   8   0.143    0.004     Y
+erdos_renyi_n50_h7_p0.5_s123             KaMIS_online_mis           8   0.143   40.008     Y
+erdos_renyi_n50_h7_p0.5_s123             KaMIS_redumis              8   0.143   37.963     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n50_h7_p0.5_s42              Greedy_MinDeg              8   0.571    0.001     Y
+erdos_renyi_n50_h7_p0.5_s42              LocalSearch                8   0.571    0.001     Y
+erdos_renyi_n50_h7_p0.5_s42              Spectral                   3   0.143    0.001     Y
+erdos_renyi_n50_h7_p0.5_s42              Exact_NX                   8   0.571    0.004     Y
+erdos_renyi_n50_h7_p0.5_s42              KaMIS_online_mis           8   0.000   40.013     Y
+erdos_renyi_n50_h7_p0.5_s42              KaMIS_redumis              8   0.857   30.020     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n50_h7_p0.5_s456             Greedy_MinDeg              7   0.143    0.001     Y
+erdos_renyi_n50_h7_p0.5_s456             LocalSearch                7   0.143    0.001     Y
+erdos_renyi_n50_h7_p0.5_s456             Spectral                   2   0.000    0.001     Y
+erdos_renyi_n50_h7_p0.5_s456             Exact_NX                   8   0.286    0.004     Y
+erdos_renyi_n50_h7_p0.5_s456             KaMIS_online_mis           8   0.429   40.009     Y
+erdos_renyi_n50_h7_p0.5_s456             KaMIS_redumis              8   0.429   35.181     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n20_h10_q3_b2_s123     Greedy_MinDeg             10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s123     LocalSearch               10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s123     Spectral                   8   0.800    0.001     Y
+multi_clique_core_n20_h10_q3_b2_s123     Exact_NX                  10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s123     KaMIS_online_mis          10   1.000    0.007     Y
+multi_clique_core_n20_h10_q3_b2_s123     KaMIS_redumis             10   1.000    0.040     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n20_h10_q3_b2_s42      Greedy_MinDeg             10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s42      LocalSearch               10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s42      Spectral                   2   0.100    0.001     Y
+multi_clique_core_n20_h10_q3_b2_s42      Exact_NX                  10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s42      KaMIS_online_mis          10   1.000   40.008     Y
+multi_clique_core_n20_h10_q3_b2_s42      KaMIS_redumis             10   1.000    0.032     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n20_h10_q3_b2_s456     Greedy_MinDeg             10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s456     LocalSearch               10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s456     Spectral                   9   0.900    0.001     Y
+multi_clique_core_n20_h10_q3_b2_s456     Exact_NX                  10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s456     KaMIS_online_mis          10   1.000    0.007     Y
+multi_clique_core_n20_h10_q3_b2_s456     KaMIS_redumis             10   1.000    0.045     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n30_h8_q3_b2_s123      Greedy_MinDeg              8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s123      LocalSearch                8   1.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s123      Spectral                   8   1.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s123      Exact_NX                   8   1.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s123      KaMIS_online_mis           7   0.875   40.008     Y
+multi_clique_core_n30_h8_q3_b2_s123      KaMIS_redumis              8   1.000    0.049     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n30_h8_q3_b2_s42       Greedy_MinDeg              8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s42       LocalSearch                8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s42       Spectral                   3   0.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s42       Exact_NX                   8   1.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s42       KaMIS_online_mis           8   1.000   40.007     Y
+multi_clique_core_n30_h8_q3_b2_s42       KaMIS_redumis              8   1.000    0.052     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n30_h8_q3_b2_s456      Greedy_MinDeg              8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s456      LocalSearch                8   1.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s456      Spectral                   2   0.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s456      Exact_NX                   8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s456      KaMIS_online_mis           8   1.000   40.009     Y
+multi_clique_core_n30_h8_q3_b2_s456      KaMIS_redumis              8   1.000    0.057     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n50_h10_q3_b2_s123     Greedy_MinDeg             10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s123     LocalSearch               10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s123     Spectral                   3   0.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s123     Exact_NX                  10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s123     KaMIS_online_mis          10   1.000   40.010     Y
+multi_clique_core_n50_h10_q3_b2_s123     KaMIS_redumis             10   1.000   17.781     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n50_h10_q3_b2_s42      Greedy_MinDeg             10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s42      LocalSearch               10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s42      Spectral                   3   0.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s42      Exact_NX                  10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s42      KaMIS_online_mis          10   1.000   40.007     Y
+multi_clique_core_n50_h10_q3_b2_s42      KaMIS_redumis             10   1.000   34.080     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n50_h10_q3_b2_s456     Greedy_MinDeg             10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s456     LocalSearch               10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s456     Spectral                  10   1.000    0.002     Y
+multi_clique_core_n50_h10_q3_b2_s456     Exact_NX                  10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s456     KaMIS_online_mis          10   1.000   40.008     Y
+multi_clique_core_n50_h10_q3_b2_s456     KaMIS_redumis             10   1.000   34.116     Y
+------------------------------------------------------------------------------------------
