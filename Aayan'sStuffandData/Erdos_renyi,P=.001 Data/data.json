@@ -1,0 +1,1118 @@
+{
+  "erdos_renyi_n625_h25_s42": {
+    "family": "erdos_renyi",
+    "n": 625,
+    "h": 25,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 42,
+    "num_edges": 200,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 494,
+        "overlap": 19,
+        "recall": 0.76,
+        "runtime": 0.040741682052612305,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 494,
+        "overlap": 19,
+        "recall": 0.76,
+        "runtime": 0.04782414436340332,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 494,
+        "overlap": 19,
+        "recall": 0.76,
+        "runtime": 0.04953193664550781,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 494,
+        "overlap": 19,
+        "recall": 0.76,
+        "runtime": 0.021683692932128906,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 494,
+        "overlap": 18,
+        "recall": 0.72,
+        "runtime": 0.05552029609680176,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n625_h25_s123": {
+    "family": "erdos_renyi",
+    "n": 625,
+    "h": 25,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 123,
+    "num_edges": 199,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 490,
+        "overlap": 21,
+        "recall": 0.84,
+        "runtime": 0.03465700149536133,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 490,
+        "overlap": 21,
+        "recall": 0.84,
+        "runtime": 0.044948577880859375,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 490,
+        "overlap": 21,
+        "recall": 0.84,
+        "runtime": 0.04747271537780762,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 490,
+        "overlap": 21,
+        "recall": 0.84,
+        "runtime": 0.01773667335510254,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 490,
+        "overlap": 19,
+        "recall": 0.76,
+        "runtime": 0.06035256385803223,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n625_h25_s456": {
+    "family": "erdos_renyi",
+    "n": 625,
+    "h": 25,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 456,
+    "num_edges": 175,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 501,
+        "overlap": 24,
+        "recall": 0.96,
+        "runtime": 0.036579132080078125,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 501,
+        "overlap": 24,
+        "recall": 0.96,
+        "runtime": 0.04350113868713379,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 501,
+        "overlap": 24,
+        "recall": 0.96,
+        "runtime": 0.045525312423706055,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 501,
+        "overlap": 24,
+        "recall": 0.96,
+        "runtime": 0.014857053756713867,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 501,
+        "overlap": 20,
+        "recall": 0.8,
+        "runtime": 0.06787300109863281,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n400_h20_s42": {
+    "family": "erdos_renyi",
+    "n": 400,
+    "h": 20,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 42,
+    "num_edges": 72,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 345,
+        "overlap": 19,
+        "recall": 0.95,
+        "runtime": 0.015143871307373047,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 345,
+        "overlap": 19,
+        "recall": 0.95,
+        "runtime": 0.015944480895996094,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 345,
+        "overlap": 19,
+        "recall": 0.95,
+        "runtime": 0.030937910079956055,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 345,
+        "overlap": 18,
+        "recall": 0.9,
+        "runtime": 0.018777847290039062,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 345,
+        "overlap": 16,
+        "recall": 0.8,
+        "runtime": 0.050833702087402344,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n400_h20_s123": {
+    "family": "erdos_renyi",
+    "n": 400,
+    "h": 20,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 123,
+    "num_edges": 64,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 352,
+        "overlap": 18,
+        "recall": 0.9,
+        "runtime": 0.015355348587036133,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 352,
+        "overlap": 18,
+        "recall": 0.9,
+        "runtime": 0.016530275344848633,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 352,
+        "overlap": 18,
+        "recall": 0.9,
+        "runtime": 0.0257568359375,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 352,
+        "overlap": 18,
+        "recall": 0.9,
+        "runtime": 0.019565105438232422,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 352,
+        "overlap": 17,
+        "recall": 0.85,
+        "runtime": 0.06289339065551758,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n400_h20_s456": {
+    "family": "erdos_renyi",
+    "n": 400,
+    "h": 20,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 456,
+    "num_edges": 69,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 350,
+        "overlap": 17,
+        "recall": 0.85,
+        "runtime": 0.015553474426269531,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 350,
+        "overlap": 17,
+        "recall": 0.85,
+        "runtime": 0.026979446411132812,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 350,
+        "overlap": 17,
+        "recall": 0.85,
+        "runtime": 0.02699875831604004,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 350,
+        "overlap": 17,
+        "recall": 0.85,
+        "runtime": 0.01573038101196289,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 350,
+        "overlap": 18,
+        "recall": 0.9,
+        "runtime": 0.07288742065429688,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n900_h30_s42": {
+    "family": "erdos_renyi",
+    "n": 900,
+    "h": 30,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 42,
+    "num_edges": 371,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 686,
+        "overlap": 22,
+        "recall": 0.7333333333333333,
+        "runtime": 0.08244490623474121,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 686,
+        "overlap": 22,
+        "recall": 0.7333333333333333,
+        "runtime": 0.07857847213745117,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 686,
+        "overlap": 22,
+        "recall": 0.7333333333333333,
+        "runtime": 0.07636499404907227,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 686,
+        "overlap": 21,
+        "recall": 0.7,
+        "runtime": 0.01881265640258789,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 686,
+        "overlap": 22,
+        "recall": 0.7333333333333333,
+        "runtime": 0.08084988594055176,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n900_h30_s123": {
+    "family": "erdos_renyi",
+    "n": 900,
+    "h": 30,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 123,
+    "num_edges": 367,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 683,
+        "overlap": 20,
+        "recall": 0.6666666666666666,
+        "runtime": 0.07869887351989746,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 683,
+        "overlap": 20,
+        "recall": 0.6666666666666666,
+        "runtime": 0.07412838935852051,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 683,
+        "overlap": 20,
+        "recall": 0.6666666666666666,
+        "runtime": 0.08809804916381836,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 683,
+        "overlap": 20,
+        "recall": 0.6666666666666666,
+        "runtime": 0.01826643943786621,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 683,
+        "overlap": 24,
+        "recall": 0.8,
+        "runtime": 0.0771780014038086,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n900_h30_s456": {
+    "family": "erdos_renyi",
+    "n": 900,
+    "h": 30,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 456,
+    "num_edges": 372,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 679,
+        "overlap": 24,
+        "recall": 0.8,
+        "runtime": 0.07211685180664062,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 679,
+        "overlap": 24,
+        "recall": 0.8,
+        "runtime": 0.08076095581054688,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 679,
+        "overlap": 24,
+        "recall": 0.8,
+        "runtime": 0.07778525352478027,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 679,
+        "overlap": 23,
+        "recall": 0.7666666666666667,
+        "runtime": 0.017632484436035156,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 679,
+        "overlap": 24,
+        "recall": 0.8,
+        "runtime": 0.06945157051086426,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n50_h7_s42": {
+    "family": "erdos_renyi",
+    "n": 50,
+    "h": 7,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 42,
+    "num_edges": 2,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 48,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.0003654956817626953,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 48,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.0004801750183105469,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 48,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.0024704933166503906,
+        "verified": true
+      },
+      {
+        "solver": "Exact_NX",
+        "size": 48,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.0021932125091552734,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 48,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.026369333267211914,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 48,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.06851887702941895,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n50_h7_s123": {
+    "family": "erdos_renyi",
+    "n": 50,
+    "h": 7,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 123,
+    "num_edges": 2,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 48,
+        "overlap": 6,
+        "recall": 0.8571428571428571,
+        "runtime": 0.0003609657287597656,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 48,
+        "overlap": 6,
+        "recall": 0.8571428571428571,
+        "runtime": 0.00048828125,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 48,
+        "overlap": 6,
+        "recall": 0.8571428571428571,
+        "runtime": 0.0025415420532226562,
+        "verified": true
+      },
+      {
+        "solver": "Exact_NX",
+        "size": 48,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.0017244815826416016,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 48,
+        "overlap": 6,
+        "recall": 0.8571428571428571,
+        "runtime": 0.024766206741333008,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 48,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.0671076774597168,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n50_h7_s456": {
+    "family": "erdos_renyi",
+    "n": 50,
+    "h": 7,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 456,
+    "num_edges": 1,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 49,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.0003590583801269531,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 49,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.0005049705505371094,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 49,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.0023255348205566406,
+        "verified": true
+      },
+      {
+        "solver": "Exact_NX",
+        "size": 49,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.001661062240600586,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 49,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.024131059646606445,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 49,
+        "overlap": 7,
+        "recall": 1.0,
+        "runtime": 0.06880760192871094,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n100_h10_s42": {
+    "family": "erdos_renyi",
+    "n": 100,
+    "h": 10,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 42,
+    "num_edges": 7,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 93,
+        "overlap": 10,
+        "recall": 1.0,
+        "runtime": 0.0011556148529052734,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 93,
+        "overlap": 10,
+        "recall": 1.0,
+        "runtime": 0.0012807846069335938,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 93,
+        "overlap": 10,
+        "recall": 1.0,
+        "runtime": 0.002907276153564453,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 93,
+        "overlap": 10,
+        "recall": 1.0,
+        "runtime": 0.02267765998840332,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 93,
+        "overlap": 7,
+        "recall": 0.7,
+        "runtime": 0.06373071670532227,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n100_h10_s123": {
+    "family": "erdos_renyi",
+    "n": 100,
+    "h": 10,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 123,
+    "num_edges": 6,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 95,
+        "overlap": 9,
+        "recall": 0.9,
+        "runtime": 0.0011720657348632812,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 95,
+        "overlap": 9,
+        "recall": 0.9,
+        "runtime": 0.001318216323852539,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 95,
+        "overlap": 9,
+        "recall": 0.9,
+        "runtime": 0.002985239028930664,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 95,
+        "overlap": 9,
+        "recall": 0.9,
+        "runtime": 0.023653268814086914,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 95,
+        "overlap": 9,
+        "recall": 0.9,
+        "runtime": 0.05083966255187988,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n100_h10_s456": {
+    "family": "erdos_renyi",
+    "n": 100,
+    "h": 10,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 456,
+    "num_edges": 3,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 97,
+        "overlap": 10,
+        "recall": 1.0,
+        "runtime": 0.0013065338134765625,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 97,
+        "overlap": 10,
+        "recall": 1.0,
+        "runtime": 0.0013928413391113281,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 97,
+        "overlap": 10,
+        "recall": 1.0,
+        "runtime": 0.0027313232421875,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 97,
+        "overlap": 10,
+        "recall": 1.0,
+        "runtime": 0.01662588119506836,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 97,
+        "overlap": 10,
+        "recall": 1.0,
+        "runtime": 0.05001473426818848,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n200_h14_s42": {
+    "family": "erdos_renyi",
+    "n": 200,
+    "h": 14,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 42,
+    "num_edges": 25,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 179,
+        "overlap": 12,
+        "recall": 0.8571428571428571,
+        "runtime": 0.0040400028228759766,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 179,
+        "overlap": 12,
+        "recall": 0.8571428571428571,
+        "runtime": 0.004259586334228516,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 179,
+        "overlap": 12,
+        "recall": 0.8571428571428571,
+        "runtime": 0.005980014801025391,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 179,
+        "overlap": 12,
+        "recall": 0.8571428571428571,
+        "runtime": 0.024486541748046875,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 179,
+        "overlap": 13,
+        "recall": 0.9285714285714286,
+        "runtime": 0.060155391693115234,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n200_h14_s123": {
+    "family": "erdos_renyi",
+    "n": 200,
+    "h": 14,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 123,
+    "num_edges": 18,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 183,
+        "overlap": 12,
+        "recall": 0.8571428571428571,
+        "runtime": 0.004113197326660156,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 183,
+        "overlap": 12,
+        "recall": 0.8571428571428571,
+        "runtime": 0.0048351287841796875,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 183,
+        "overlap": 12,
+        "recall": 0.8571428571428571,
+        "runtime": 0.008707284927368164,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 183,
+        "overlap": 12,
+        "recall": 0.8571428571428571,
+        "runtime": 0.02754974365234375,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 183,
+        "overlap": 13,
+        "recall": 0.9285714285714286,
+        "runtime": 0.058559417724609375,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n200_h14_s456": {
+    "family": "erdos_renyi",
+    "n": 200,
+    "h": 14,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 456,
+    "num_edges": 15,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 185,
+        "overlap": 14,
+        "recall": 1.0,
+        "runtime": 0.0039103031158447266,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 185,
+        "overlap": 14,
+        "recall": 1.0,
+        "runtime": 0.004165172576904297,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 185,
+        "overlap": 14,
+        "recall": 1.0,
+        "runtime": 0.009439468383789062,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 185,
+        "overlap": 14,
+        "recall": 1.0,
+        "runtime": 0.02200627326965332,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 185,
+        "overlap": 13,
+        "recall": 0.9285714285714286,
+        "runtime": 0.05251765251159668,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n1000_h32_s42": {
+    "family": "erdos_renyi",
+    "n": 1000,
+    "h": 32,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 42,
+    "num_edges": 522,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 709,
+        "overlap": 20,
+        "recall": 0.625,
+        "runtime": 0.08941936492919922,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 709,
+        "overlap": 20,
+        "recall": 0.625,
+        "runtime": 0.08507180213928223,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 709,
+        "overlap": 20,
+        "recall": 0.625,
+        "runtime": 0.09271955490112305,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 709,
+        "overlap": 22,
+        "recall": 0.6875,
+        "runtime": 0.020679950714111328,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 709,
+        "overlap": 26,
+        "recall": 0.8125,
+        "runtime": 0.08767342567443848,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n1000_h32_s123": {
+    "family": "erdos_renyi",
+    "n": 1000,
+    "h": 32,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 123,
+    "num_edges": 469,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 736,
+        "overlap": 27,
+        "recall": 0.84375,
+        "runtime": 0.09327816963195801,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 736,
+        "overlap": 27,
+        "recall": 0.84375,
+        "runtime": 0.0959160327911377,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 736,
+        "overlap": 27,
+        "recall": 0.84375,
+        "runtime": 0.08959674835205078,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 736,
+        "overlap": 28,
+        "recall": 0.875,
+        "runtime": 0.014765262603759766,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 736,
+        "overlap": 22,
+        "recall": 0.6875,
+        "runtime": 0.07056260108947754,
+        "verified": true
+      }
+    ]
+  },
+  "erdos_renyi_n1000_h32_s456": {
+    "family": "erdos_renyi",
+    "n": 1000,
+    "h": 32,
+    "params": {
+      "p": 0.001
+    },
+    "seed": 456,
+    "num_edges": 488,
+    "results": [
+      {
+        "solver": "Greedy_MinDeg",
+        "size": 730,
+        "overlap": 25,
+        "recall": 0.78125,
+        "runtime": 0.10290408134460449,
+        "verified": true
+      },
+      {
+        "solver": "LocalSearch",
+        "size": 730,
+        "overlap": 25,
+        "recall": 0.78125,
+        "runtime": 0.09695887565612793,
+        "verified": true
+      },
+      {
+        "solver": "Spectral",
+        "size": 730,
+        "overlap": 25,
+        "recall": 0.78125,
+        "runtime": 0.0882425308227539,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_online_mis",
+        "size": 730,
+        "overlap": 26,
+        "recall": 0.8125,
+        "runtime": 0.016827821731567383,
+        "verified": true
+      },
+      {
+        "solver": "KaMIS_redumis",
+        "size": 730,
+        "overlap": 26,
+        "recall": 0.8125,
+        "runtime": 0.07331585884094238,
+        "verified": true
+      }
+    ]
+  }
+}
