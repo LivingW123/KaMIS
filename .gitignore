@@ -33,3 +33,5 @@
 docs/*
 deploy
 optimized
+build/
+.claude/settings.local.json
