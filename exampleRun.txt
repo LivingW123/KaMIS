@@ -1,0 +1,276 @@
+  MIS Classical Benchmarking Suite
+============================================================
+KaMIS found at ../KaMIS-master/deploy: ['redumis', 'online_mis', 'weighted_branch_reduce']
+
+--- Toy ET Validation (f = x1 + ... + xn - n) ---
+    n            ET         n^3/3     Ratio
+    5          92.2          41.7    2.2128
+    8         316.1         170.7    1.8524
+   10         574.4         333.3    1.7232
+   15        1729.5        1125.0    1.5373
+   20        3826.6        2666.7    1.4350
+   30       11899.2        9000.0    1.3221
+   50       50802.4       41666.7    1.2193
+
+--- Independent Set Counting (small instances) ---
+  n=10, h=4: counting_ok=True
+    I_1 =     10,  C(h,1) =      4,  ratio = 2.50
+    I_2 =     24,  C(h,2) =      6,  ratio = 4.00
+    I_3 =     19,  C(h,3) =      4,  ratio = 4.75
+    I_4 =      7,  C(h,4) =      1,  ratio = 7.00
+  n=12, h=4: counting_ok=True
+    I_1 =     12,  C(h,1) =      4,  ratio = 3.00
+    I_2 =     34,  C(h,2) =      6,  ratio = 5.67
+    I_3 =     27,  C(h,3) =      4,  ratio = 6.75
+    I_4 =      6,  C(h,4) =      1,  ratio = 6.00
+  n=14, h=5: counting_ok=True
+    I_1 =     14,  C(h,1) =      5,  ratio = 2.80
+    I_2 =     49,  C(h,2) =     10,  ratio = 4.90
+    I_3 =     60,  C(h,3) =     10,  ratio = 6.00
+    I_4 =     28,  C(h,4) =      5,  ratio = 5.60
+    I_5 =      4,  C(h,5) =      1,  ratio = 4.00
+  n=16, h=5: counting_ok=True
+    I_1 =     16,  C(h,1) =      5,  ratio = 3.20
+    I_2 =     61,  C(h,2) =     10,  ratio = 6.10
+    I_3 =     60,  C(h,3) =     10,  ratio = 6.00
+    I_4 =     14,  C(h,4) =      5,  ratio = 2.80
+    I_5 =      1,  C(h,5) =      1,  ratio = 1.00
+
+--- Solver Comparison ---
+
+  Running erdos_renyi_n625_h25_p0.001_s42 (n=625, h=25, edges=200)...
+    Greedy_MinDeg           size= 494  recall=0.760  time=0.030s  ✓
+    LocalSearch             size= 494  recall=0.760  time=0.028s  ✓
+    Spectral                size= 107  recall=0.240  time=1.550s  ✓
+    KaMIS_online_mis        size= 494  recall=0.760  time=0.012s  ✓
+    KaMIS_redumis           size= 494  recall=0.720  time=0.049s  ✓
+
+  Running erdos_renyi_n625_h25_p0.001_s123 (n=625, h=25, edges=199)...
+    Greedy_MinDeg           size= 490  recall=0.840  time=0.033s  ✓
+    LocalSearch             size= 490  recall=0.840  time=0.030s  ✓
+    Spectral                size= 106  recall=0.200  time=0.002s  ✓
+    KaMIS_online_mis        size= 490  recall=0.840  time=0.010s  ✓
+    KaMIS_redumis           size= 490  recall=0.760  time=0.053s  ✓
+
+  Running erdos_renyi_n625_h25_p0.001_s456 (n=625, h=25, edges=175)...
+    Greedy_MinDeg           size= 501  recall=0.960  time=0.029s  ✓
+    LocalSearch             size= 501  recall=0.960  time=0.033s  ✓
+    Spectral                size=  77  recall=0.160  time=0.003s  ✓
+    KaMIS_online_mis        size= 501  recall=0.960  time=0.014s  ✓
+    KaMIS_redumis           size= 501  recall=0.800  time=0.054s  ✓
+
+  Running erdos_renyi_n400_h20_p0.001_s42 (n=400, h=20, edges=72)...
+    Greedy_MinDeg           size= 345  recall=0.950  time=0.014s  ✓
+    LocalSearch             size= 345  recall=0.950  time=0.012s  ✓
+    Spectral                size=  43  recall=0.100  time=0.001s  ✓
+    KaMIS_online_mis        size= 345  recall=0.900  time=0.018s  ✓
+    KaMIS_redumis           size= 345  recall=0.800  time=0.028s  ✓
+
+  Running erdos_renyi_n400_h20_p0.001_s123 (n=400, h=20, edges=64)...
+    Greedy_MinDeg           size= 352  recall=0.900  time=0.014s  ✓
+    LocalSearch             size= 352  recall=0.900  time=0.015s  ✓
+    Spectral                size=  42  recall=0.100  time=0.001s  ✓
+    KaMIS_online_mis        size= 352  recall=0.900  time=0.018s  ✓
+    KaMIS_redumis           size= 352  recall=0.850  time=0.034s  ✓
+
+  Running erdos_renyi_n400_h20_p0.001_s456 (n=400, h=20, edges=69)...
+    Greedy_MinDeg           size= 350  recall=0.850  time=0.013s  ✓
+    LocalSearch             size= 350  recall=0.850  time=0.014s  ✓
+    Spectral                size=  38  recall=0.100  time=0.001s  ✓
+    KaMIS_redumis           size= 350  recall=0.900  time=0.041s  ✓
+
+  Running erdos_renyi_n200_h14_p0.001_s42 (n=200, h=14, edges=25)...
+    Greedy_MinDeg           size= 179  recall=0.857  time=0.003s  ✓
+    LocalSearch             size= 179  recall=0.857  time=0.003s  ✓
+    Spectral                size=  18  recall=0.000  time=0.001s  ✓
+    KaMIS_online_mis        size= 179  recall=0.857  time=0.014s  ✓
+    KaMIS_redumis           size= 179  recall=0.929  time=0.039s  ✓
+
+  Running erdos_renyi_n200_h14_p0.001_s123 (n=200, h=14, edges=18)...
+    Greedy_MinDeg           size= 183  recall=0.857  time=0.003s  ✓
+    LocalSearch             size= 183  recall=0.857  time=0.004s  ✓
+    Spectral                size=   9  recall=0.071  time=0.001s  ✓
+    KaMIS_online_mis        size= 183  recall=0.857  time=0.009s  ✓
+    KaMIS_redumis           size= 183  recall=0.929  time=0.037s  ✓
+
+  Running erdos_renyi_n200_h14_p0.001_s456 (n=200, h=14, edges=15)...
+    Greedy_MinDeg           size= 185  recall=1.000  time=0.003s  ✓
+    LocalSearch             size= 185  recall=1.000  time=0.003s  ✓
+    Spectral                size=  13  recall=0.071  time=0.001s  ✓
+    KaMIS_online_mis        size= 185  recall=1.000  time=0.010s  ✓
+    KaMIS_redumis           size= 185  recall=0.929  time=0.037s  ✓
+
+  Running erdos_renyi_n625_h25_p0.005_s42 (n=625, h=25, edges=978)...
+    Greedy_MinDeg           size= 320  recall=0.440  time=0.018s  ✓
+    LocalSearch             size= 321  recall=0.440  time=0.018s  ✓
+    Spectral                size= 204  recall=0.280  time=0.003s  ✓
+    KaMIS_online_mis        size= 320  recall=0.400  time=0.012s  ✓
+    KaMIS_redumis           size= 321  recall=0.400  time=0.060s  ✓
+
+  Running erdos_renyi_n625_h25_p0.005_s123 (n=625, h=25, edges=969)...
+    Greedy_MinDeg           size= 326  recall=0.680  time=0.018s  ✓
+    LocalSearch             size= 326  recall=0.680  time=0.020s  ✓
+    Spectral                size= 216  recall=0.360  time=0.003s  ✓
+    KaMIS_online_mis        size= 326  recall=0.800  time=0.013s  ✓
+    KaMIS_redumis           size= 327  recall=0.680  time=0.078s  ✓
+
+  Running erdos_renyi_n625_h25_p0.005_s456 (n=625, h=25, edges=912)...
+    Greedy_MinDeg           size= 329  recall=0.720  time=0.025s  ✓
+    LocalSearch             size= 329  recall=0.720  time=0.020s  ✓
+    Spectral                size= 144  recall=0.240  time=0.003s  ✓
+    KaMIS_online_mis        size= 321  recall=0.600  time=0.012s  ✓
+    KaMIS_redumis           size= 331  recall=0.720  time=0.058s  ✓
+
+  Running erdos_renyi_n400_h20_p0.005_s42 (n=400, h=20, edges=404)...
+    Greedy_MinDeg           size= 242  recall=0.650  time=0.009s  ✓
+    LocalSearch             size= 242  recall=0.650  time=0.010s  ✓
+    Spectral                size= 152  recall=0.450  time=0.002s  ✓
+    KaMIS_online_mis        size= 241  recall=0.650  time=0.015s  ✓
+    KaMIS_redumis           size= 242  recall=0.650  time=0.042s  ✓
+
+  Running erdos_renyi_n400_h20_p0.005_s123 (n=400, h=20, edges=365)...
+    Greedy_MinDeg           size= 256  recall=0.750  time=0.011s  ✓
+    LocalSearch             size= 256  recall=0.750  time=0.010s  ✓
+    Spectral                size= 156  recall=0.500  time=0.002s  ✓
+    KaMIS_online_mis        size= 255  recall=0.750  time=0.013s  ✓
+    KaMIS_redumis           size= 256  recall=0.600  time=0.040s  ✓
+
+  Running erdos_renyi_n400_h20_p0.005_s456 (n=400, h=20, edges=417)...
+    Greedy_MinDeg           size= 238  recall=0.650  time=0.008s  ✓
+    LocalSearch             size= 238  recall=0.650  time=0.009s  ✓
+    Spectral                size= 146  recall=0.200  time=0.002s  ✓
+    KaMIS_online_mis        size= 234  recall=0.600  time=0.016s  ✓
+    KaMIS_redumis           size= 238  recall=0.750  time=0.046s  ✓
+
+  Running erdos_renyi_n200_h14_p0.005_s42 (n=200, h=14, edges=83)...
+    Greedy_MinDeg           size= 153  recall=0.929  time=0.003s  ✓
+    LocalSearch             size= 153  recall=0.929  time=0.003s  ✓
+    Spectral                size=  27  recall=0.214  time=0.001s  ✓
+    KaMIS_online_mis        size= 153  recall=0.929  time=0.014s  ✓
+    KaMIS_redumis           size= 153  recall=0.929  time=0.039s  ✓
+
+  Running erdos_renyi_n200_h14_p0.005_s123 (n=200, h=14, edges=87)...
+    Greedy_MinDeg           size= 147  recall=0.786  time=0.003s  ✓
+    LocalSearch             size= 147  recall=0.786  time=0.003s  ✓
+    Spectral                size=  22  recall=0.071  time=0.001s  ✓
+    KaMIS_online_mis        size= 147  recall=0.786  time=0.011s  ✓
+    KaMIS_redumis           size= 147  recall=1.000  time=0.038s  ✓
+
+  Running erdos_renyi_n200_h14_p0.005_s456 (n=200, h=14, edges=108)...
+    Greedy_MinDeg           size= 147  recall=0.857  time=0.003s  ✓
+    LocalSearch             size= 147  recall=0.857  time=0.003s  ✓
+    Spectral                size=  52  recall=0.214  time=0.002s  ✓
+    KaMIS_online_mis        size= 147  recall=0.786  time=0.014s  ✓
+    KaMIS_redumis           size= 147  recall=0.714  time=0.035s  ✓
+
+==========================================================================================
+Instance                       Solver                  Size  Recall  Time(s) Valid
+------------------------------------------------------------------------------------------
+erdos_renyi_n625_h25_p0.001_s42 Greedy_MinDeg            494   0.760    0.030     ✓
+erdos_renyi_n625_h25_p0.001_s42 LocalSearch              494   0.760    0.028     ✓
+erdos_renyi_n625_h25_p0.001_s42 Spectral                 107   0.240    1.550     ✓
+erdos_renyi_n625_h25_p0.001_s42 KaMIS_online_mis         494   0.760    0.012     ✓
+erdos_renyi_n625_h25_p0.001_s42 KaMIS_redumis            494   0.720    0.049     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n625_h25_p0.001_s123 Greedy_MinDeg            490   0.840    0.033     ✓
+erdos_renyi_n625_h25_p0.001_s123 LocalSearch              490   0.840    0.030     ✓
+erdos_renyi_n625_h25_p0.001_s123 Spectral                 106   0.200    0.002     ✓
+erdos_renyi_n625_h25_p0.001_s123 KaMIS_online_mis         490   0.840    0.010     ✓
+erdos_renyi_n625_h25_p0.001_s123 KaMIS_redumis            490   0.760    0.053     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n625_h25_p0.001_s456 Greedy_MinDeg            501   0.960    0.029     ✓
+erdos_renyi_n625_h25_p0.001_s456 LocalSearch              501   0.960    0.033     ✓
+erdos_renyi_n625_h25_p0.001_s456 Spectral                  77   0.160    0.003     ✓
+erdos_renyi_n625_h25_p0.001_s456 KaMIS_online_mis         501   0.960    0.014     ✓
+erdos_renyi_n625_h25_p0.001_s456 KaMIS_redumis            501   0.800    0.054     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h20_p0.001_s42 Greedy_MinDeg            345   0.950    0.014     ✓
+erdos_renyi_n400_h20_p0.001_s42 LocalSearch              345   0.950    0.012     ✓
+erdos_renyi_n400_h20_p0.001_s42 Spectral                  43   0.100    0.001     ✓
+erdos_renyi_n400_h20_p0.001_s42 KaMIS_online_mis         345   0.900    0.018     ✓
+erdos_renyi_n400_h20_p0.001_s42 KaMIS_redumis            345   0.800    0.028     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h20_p0.001_s123 Greedy_MinDeg            352   0.900    0.014     ✓
+erdos_renyi_n400_h20_p0.001_s123 LocalSearch              352   0.900    0.015     ✓
+erdos_renyi_n400_h20_p0.001_s123 Spectral                  42   0.100    0.001     ✓
+erdos_renyi_n400_h20_p0.001_s123 KaMIS_online_mis         352   0.900    0.018     ✓
+erdos_renyi_n400_h20_p0.001_s123 KaMIS_redumis            352   0.850    0.034     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h20_p0.001_s456 Greedy_MinDeg            350   0.850    0.013     ✓
+erdos_renyi_n400_h20_p0.001_s456 LocalSearch              350   0.850    0.014     ✓
+erdos_renyi_n400_h20_p0.001_s456 Spectral                  38   0.100    0.001     ✓
+erdos_renyi_n400_h20_p0.001_s456 KaMIS_online_mis         350   0.850    0.015     ✓
+erdos_renyi_n400_h20_p0.001_s456 KaMIS_redumis            350   0.900    0.041     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h14_p0.001_s42 Greedy_MinDeg            179   0.857    0.003     ✓
+erdos_renyi_n200_h14_p0.001_s42 LocalSearch              179   0.857    0.003     ✓
+erdos_renyi_n200_h14_p0.001_s42 Spectral                  18   0.000    0.001     ✓
+erdos_renyi_n200_h14_p0.001_s42 KaMIS_online_mis         179   0.857    0.014     ✓
+erdos_renyi_n200_h14_p0.001_s42 KaMIS_redumis            179   0.929    0.039     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h14_p0.001_s123 Greedy_MinDeg            183   0.857    0.003     ✓
+erdos_renyi_n200_h14_p0.001_s123 LocalSearch              183   0.857    0.004     ✓
+erdos_renyi_n200_h14_p0.001_s123 Spectral                   9   0.071    0.001     ✓
+erdos_renyi_n200_h14_p0.001_s123 KaMIS_online_mis         183   0.857    0.009     ✓
+erdos_renyi_n200_h14_p0.001_s123 KaMIS_redumis            183   0.929    0.037     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h14_p0.001_s456 Greedy_MinDeg            185   1.000    0.003     ✓
+erdos_renyi_n200_h14_p0.001_s456 LocalSearch              185   1.000    0.003     ✓
+erdos_renyi_n200_h14_p0.001_s456 Spectral                  13   0.071    0.001     ✓
+erdos_renyi_n200_h14_p0.001_s456 KaMIS_online_mis         185   1.000    0.010     ✓
+erdos_renyi_n200_h14_p0.001_s456 KaMIS_redumis            185   0.929    0.037     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n625_h25_p0.005_s42 Greedy_MinDeg            320   0.440    0.018     ✓
+erdos_renyi_n625_h25_p0.005_s42 LocalSearch              321   0.440    0.018     ✓
+erdos_renyi_n625_h25_p0.005_s42 Spectral                 204   0.280    0.003     ✓
+erdos_renyi_n625_h25_p0.005_s42 KaMIS_online_mis         320   0.400    0.012     ✓
+erdos_renyi_n625_h25_p0.005_s42 KaMIS_redumis            321   0.400    0.060     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n625_h25_p0.005_s123 Greedy_MinDeg            326   0.680    0.018     ✓
+erdos_renyi_n625_h25_p0.005_s123 LocalSearch              326   0.680    0.020     ✓
+erdos_renyi_n625_h25_p0.005_s123 Spectral                 216   0.360    0.003     ✓
+erdos_renyi_n625_h25_p0.005_s123 KaMIS_online_mis         326   0.800    0.013     ✓
+erdos_renyi_n625_h25_p0.005_s123 KaMIS_redumis            327   0.680    0.078     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n625_h25_p0.005_s456 Greedy_MinDeg            329   0.720    0.025     ✓
+erdos_renyi_n625_h25_p0.005_s456 LocalSearch              329   0.720    0.020     ✓
+erdos_renyi_n625_h25_p0.005_s456 Spectral                 144   0.240    0.003     ✓
+erdos_renyi_n625_h25_p0.005_s456 KaMIS_online_mis         321   0.600    0.012     ✓
+erdos_renyi_n625_h25_p0.005_s456 KaMIS_redumis            331   0.720    0.058     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h20_p0.005_s42 Greedy_MinDeg            242   0.650    0.009     ✓
+erdos_renyi_n400_h20_p0.005_s42 LocalSearch              242   0.650    0.010     ✓
+erdos_renyi_n400_h20_p0.005_s42 Spectral                 152   0.450    0.002     ✓
+erdos_renyi_n400_h20_p0.005_s42 KaMIS_online_mis         241   0.650    0.015     ✓
+erdos_renyi_n400_h20_p0.005_s42 KaMIS_redumis            242   0.650    0.042     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h20_p0.005_s123 Greedy_MinDeg            256   0.750    0.011     ✓
+erdos_renyi_n400_h20_p0.005_s123 LocalSearch              256   0.750    0.010     ✓
+erdos_renyi_n400_h20_p0.005_s123 Spectral                 156   0.500    0.002     ✓
+erdos_renyi_n400_h20_p0.005_s123 KaMIS_online_mis         255   0.750    0.013     ✓
+erdos_renyi_n400_h20_p0.005_s123 KaMIS_redumis            256   0.600    0.040     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h20_p0.005_s456 Greedy_MinDeg            238   0.650    0.008     ✓
+erdos_renyi_n400_h20_p0.005_s456 LocalSearch              238   0.650    0.009     ✓
+erdos_renyi_n400_h20_p0.005_s456 Spectral                 146   0.200    0.002     ✓
+erdos_renyi_n400_h20_p0.005_s456 KaMIS_online_mis         234   0.600    0.016     ✓
+erdos_renyi_n400_h20_p0.005_s456 KaMIS_redumis            238   0.750    0.046     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h14_p0.005_s42 Greedy_MinDeg            153   0.929    0.003     ✓
+erdos_renyi_n200_h14_p0.005_s42 LocalSearch              153   0.929    0.003     ✓
+erdos_renyi_n200_h14_p0.005_s42 Spectral                  27   0.214    0.001     ✓
+erdos_renyi_n200_h14_p0.005_s42 KaMIS_online_mis         153   0.929    0.014     ✓
+erdos_renyi_n200_h14_p0.005_s42 KaMIS_redumis            153   0.929    0.039     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h14_p0.005_s123 Greedy_MinDeg            147   0.786    0.003     ✓
+erdos_renyi_n200_h14_p0.005_s123 LocalSearch              147   0.786    0.003     ✓
+erdos_renyi_n200_h14_p0.005_s123 Spectral                  22   0.071    0.001     ✓
+erdos_renyi_n200_h14_p0.005_s123 KaMIS_online_mis         147   0.786    0.011     ✓
+erdos_renyi_n200_h14_p0.005_s123 KaMIS_redumis            147   1.000    0.038     ✓
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h14_p0.005_s456 Greedy_MinDeg            147   0.857    0.003     ✓
+erdos_renyi_n200_h14_p0.005_s456 LocalSearch              147   0.857    0.003     ✓
+erdos_renyi_n200_h14_p0.005_s456 Spectral                  52   0.214    0.002     ✓
+erdos_renyi_n200_h14_p0.005_s456 KaMIS_online_mis         147   0.786    0.014     ✓
+erdos_renyi_n200_h14_p0.005_s456 KaMIS_redumis            147   0.714    0.035     ✓
+------------------------------------------------------------------------------------------
