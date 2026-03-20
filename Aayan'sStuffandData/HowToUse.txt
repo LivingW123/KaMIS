@@ -1,0 +1,14 @@
+Compile c++:
+    mkdir build (done already)
+    cd build
+    cmake ..
+    make -j
+RUn c++:
+    cd ../deploy
+    ./redumis <graphname>.graph
+Run Py:
+    source venv/bin/activate
+    python mis_benchmark.py --full
+    python plotter.py
+
+Note plotter takes avergages across different seeds

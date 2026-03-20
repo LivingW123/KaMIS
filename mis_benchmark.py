@@ -1,32 +1,65 @@
 #!/usr/bin/env python3
 """
-MIS Classical Benchmarking Suite for Quantum-Classical Comparison
-================================================================
-Complete implementation for generating planted MIS instances,
-running classical solvers, computing the ET parameter, and
-analyzing results.
+MIS Benchmarking Suite with KaMIS Integration
+=============================================
+Generates planted MIS instances, runs Python solvers and KaMIS,
+computes ET for small instances, and produces comparison tables.
 
-Dependencies: numpy, networkx, scipy, matplotlib
-Optional: python-sat (pysat) for SAT-based solving
-
-Install: pip install numpy networkx scipy matplotlib python-sat
+Usage:
+    python mis_benchmark.py                    # quick test
+    python mis_benchmark.py --full             # full benchmark
+    python mis_benchmark.py --kamis_path PATH  # specify KaMIS binary location
 """
 
 import numpy as np
 import networkx as nx
-from scipy import sparse
-from scipy.sparse.linalg import eigsh
+import subprocess
+import tempfile
+import os
+import time
+import json
+import argparse
 from itertools import combinations
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple, Optional, Set
-from abc import ABC, abstractmethod
-import time
-import warnings
-import json
-import os
+from typing import Dict, List, Set, Optional, Tuple
+from math import comb
+from pathlib import Path
 
 # ============================================================
-# SECTION 1: INSTANCE GENERATION
+# SECTION 1: Graph I/O (METIS format for KaMIS)
+# ============================================================
+
+def write_metis(G: nx.Graph, filepath: str):
+    """Write a NetworkX graph to METIS format for KaMIS.
+    KaMIS requires 1-indexed, sorted adjacency lists."""
+    n = G.number_of_nodes()
+    # Ensure nodes are 0..n-1
+    nodes = sorted(G.nodes())
+    assert nodes == list(range(n)), "Nodes must be 0..n-1"
+    
+    m = G.number_of_edges()
+    with open(filepath, 'w') as f:
+        f.write(f"{n} {m}\n")
+        for v in range(n):
+            neighbors = sorted([u + 1 for u in G.neighbors(v)])  # 1-indexed
+            f.write(" ".join(map(str, neighbors)) + "\n")
+
+
+def read_kamis_solution(filepath: str, n: int) -> Set[int]:
+    """Read a KaMIS output file (one 0/1 per line) into a set of IS nodes."""
+    mis = set()
+    with open(filepath, 'r') as f:
+        for i, line in enumerate(f):
+            if i >= n:
+                break
+            val = int(line.strip())
+            if val == 1:
+                mis.add(i)
+    return mis
+
+
+# ============================================================
+# SECTION 2: Instance Generation
 # ============================================================
 
 @dataclass
@@ -35,1245 +68,592 @@ class MISInstance:
     graph: nx.Graph
     planted_set: Set[int]
     n: int
-    h: int  # planted set size
+    h: int
     family: str
     params: Dict
     seed: int
-    instance_id: str = ""
-
-    def __post_init__(self):
-        if not self.instance_id:
-            self.instance_id = f"{self.family}_n{self.n}_h{self.h}_s{self.seed}"
-
+    
     def verify(self) -> bool:
-        """Verify the planted set is indeed independent."""
-        G = self.graph
-        S = self.planted_set
-        for u in S:
-            for v in S:
-                if u != v and G.has_edge(u, v):
+        """Check the planted set is independent."""
+        for u in self.planted_set:
+            for v in self.planted_set:
+                if u != v and self.graph.has_edge(u, v):
                     return False
         return True
+    
+    @property
+    def instance_id(self) -> str:
+        if self.family == 'erdos_renyi':
+            return f"{self.family}_n{self.n}_h{self.h}_p{self.params['p']}_s{self.seed}"
+        elif self.family == 'multi_clique_core':
+            return (
+                f"{self.family}_n{self.n}_h{self.h}"
+                f"_q{self.params['q']}_b{self.params['b']}"
+                f"_pi{self.params['p_inter']}_pc{self.params['p_cam']}"
+                f"_s{self.seed}"
+            )
+        return f"{self.family}_n{self.n}_h{self.h}_s{self.seed}"
 
 
-class InstanceGenerator:
-    """
-    Generates planted MIS instances across multiple families.
+def gen_erdos_renyi_planted(n: int, h: int, p: float = 0.5,
+                            seed: int = 42) -> MISInstance:
+    """G(n,p) with a planted independent set of size h."""
+    rng = np.random.RandomState(seed)
+    vertices = list(range(n))
+    S = set(rng.choice(vertices, size=h, replace=False).tolist())
+    
+    G = nx.Graph()
+    G.add_nodes_from(vertices)
+    for i in range(n):
+        for j in range(i + 1, n):
+            if i in S and j in S:
+                continue
+            if rng.random() < p:
+                G.add_edge(i, j)
+    
+    return MISInstance(G, S, n, h, 'erdos_renyi', {'p': p}, seed)
 
-    Families:
-      - erdos_renyi_planted: G(n,p) with planted IS of size h
-      - regular_planted: random d-regular with planted IS
-      - multi_clique_core: construction from hard-instance notes
-      - camouflaged_clique: multi-clique with degree equalization
-      - geometric_planted: random geometric graph with planted IS
-    """
 
-    def __init__(self, seed: int = 42):
-        self.rng = np.random.RandomState(seed)
-        self.base_seed = seed
-
-    def generate(self, family: str, n: int, h: int,
-                 params: Optional[Dict] = None, seed: Optional[int] = None) -> MISInstance:
-        """Generate a single instance."""
-        if seed is None:
-            seed = self.rng.randint(0, 2**31)
-        if params is None:
-            params = {}
-
-        generators = {
-            'erdos_renyi_planted': self._erdos_renyi_planted,
-            'regular_planted': self._regular_planted,
-            'multi_clique_core': self._multi_clique_core,
-            'camouflaged_clique': self._camouflaged_clique,
-            'geometric_planted': self._geometric_planted,
-        }
-
-        if family not in generators:
-            raise ValueError(f"Unknown family: {family}. Options: {list(generators.keys())}")
-
-        return generators[family](n, h, params, seed)
-
-    def _erdos_renyi_planted(self, n: int, h: int, params: Dict, seed: int) -> MISInstance:
-        """
-        Erdos-Renyi graph with planted independent set.
-        Edges within S are removed; edges elsewhere with probability p.
-
-        params:
-          - p: edge probability (default: 0.5)
-        """
-        rng = np.random.RandomState(seed)
-        p = params.get('p', 0.5)
-
-        vertices = list(range(n))
-        S = set(rng.choice(vertices, size=h, replace=False))
-
-        G = nx.Graph()
-        G.add_nodes_from(vertices)
-
-        for i in range(n):
-            for j in range(i + 1, n):
-                if i in S and j in S:
-                    continue  # no edges within planted set
-                if rng.random() < p:
-                    G.add_edge(i, j)
-
-        return MISInstance(
-            graph=G, planted_set=S, n=n, h=h,
-            family='erdos_renyi_planted',
-            params={'p': p}, seed=seed
-        )
-
-    def _regular_planted(self, n: int, h: int, params: Dict, seed: int) -> MISInstance:
-        """
-        Approximate d-regular graph with planted independent set.
-        Start with random d-regular on V\S, then connect S vertices
-        to achieve near-uniform degree.
-
-        params:
-          - d: target degree (default: n//2)
-        """
-        rng = np.random.RandomState(seed)
-        d = params.get('d', max(3, n // 4))
-
-        vertices = list(range(n))
-        S = set(rng.choice(vertices, size=h, replace=False))
-        R = [v for v in vertices if v not in S]
-
-        G = nx.Graph()
-        G.add_nodes_from(vertices)
-
-        # Connect R densely (near-complete to avoid large IS in R)
-        p_R = min(1.0, d / max(len(R) - 1, 1))
-        for i in range(len(R)):
-            for j in range(i + 1, len(R)):
-                if rng.random() < p_R:
-                    G.add_edge(R[i], R[j])
-
-        # Connect S to R to achieve approximate degree d
-        for v in S:
-            # Connect to approximately d vertices in R
-            n_connections = min(d, len(R))
-            targets = rng.choice(R, size=n_connections, replace=False)
-            for u in targets:
-                G.add_edge(v, u)
-
-        return MISInstance(
-            graph=G, planted_set=S, n=n, h=h,
-            family='regular_planted',
-            params={'d': d}, seed=seed
-        )
-
-    def _multi_clique_core(self, n: int, h: int, params: Dict, seed: int) -> MISInstance:
-        """
-        Multi-Clique Core construction from hard instance notes.
-
-        V\S is partitioned into q cliques. Each clique C_j is
-        completely connected to a block B_j ⊂ S of size b.
-        Additional camouflage edges connect C_j to S\B_j.
-
-        params:
-          - q: number of clique blocks (default: 3)
-          - b: blocking size per clique (default: 2)
-          - p_inter: inter-block edge probability (default: 0.5)
-          - p_cam: camouflage edge probability (default: 0.3)
-        """
-        rng = np.random.RandomState(seed)
-        q = params.get('q', 3)
-        b = params.get('b', 2)
-        p_inter = params.get('p_inter', 0.5)
-        p_cam = params.get('p_cam', 0.3)
-
-        assert q * b <= h, f"Need q*b <= h, got {q}*{b} > {h}"
-        assert h <= n, f"Need h <= n"
-
-        vertices = list(range(n))
-        S = set(range(h))  # planted set = first h vertices
-        R = list(range(h, n))  # remaining vertices
-
-        G = nx.Graph()
-        G.add_nodes_from(vertices)
-
-        # Partition R into q blocks (as evenly as possible)
-        block_size = len(R) // q
-        blocks = []
-        for j in range(q):
-            start = j * block_size
-            end = start + block_size if j < q - 1 else len(R)
-            blocks.append(R[start:end])
-
-        # Make each block a clique
-        for block in blocks:
-            for i in range(len(block)):
-                for j in range(i + 1, len(block)):
-                    G.add_edge(block[i], block[j])
-
-        # Inter-block edges
-        for a in range(q):
-            for bb in range(a + 1, q):
-                for u in blocks[a]:
-                    for v in blocks[bb]:
-                        if rng.random() < p_inter:
-                            G.add_edge(u, v)
-
-        # Blocking: assign disjoint B_j ⊂ S to each block
-        S_list = sorted(S)
-        B_sets = []
-        for j in range(q):
-            B_j = set(S_list[j * b: (j + 1) * b])
-            B_sets.append(B_j)
-
-        # Connect each clique to its blocking set completely
-        for j in range(q):
-            for u in blocks[j]:
-                for v in B_sets[j]:
-                    G.add_edge(u, v)
-
-        # Camouflage: connect clique vertices to S \ B_j
-        for j in range(q):
-            S_minus_Bj = S - B_sets[j]
-            for u in blocks[j]:
-                for v in S_minus_Bj:
-                    if rng.random() < p_cam:
+def gen_multi_clique_core(n: int, h: int, q: int = 3, b: int = 2,
+                          p_inter: float = 0.5, p_cam: float = 0.3,
+                          seed: int = 42) -> MISInstance:
+    """Multi-clique core construction from the hard instance notes.
+    V\\S is partitioned into q cliques, each blocking b vertices of S."""
+    rng = np.random.RandomState(seed)
+    assert q * b <= h <= n
+    
+    S = set(range(h))
+    R = list(range(h, n))
+    
+    G = nx.Graph()
+    G.add_nodes_from(range(n))
+    
+    # Partition R into q blocks, make each a clique
+    block_size = max(1, len(R) // q)
+    blocks = []
+    for j in range(q):
+        start = j * block_size
+        end = start + block_size if j < q - 1 else len(R)
+        block = R[start:end]
+        blocks.append(block)
+        for a in range(len(block)):
+            for bb in range(a + 1, len(block)):
+                G.add_edge(block[a], block[bb])
+    
+    # Inter-block edges
+    for a in range(q):
+        for bb in range(a + 1, q):
+            for u in blocks[a]:
+                for v in blocks[bb]:
+                    if rng.random() < p_inter:
                         G.add_edge(u, v)
+    
+    # Blocking sets B_j ⊂ S
+    S_list = sorted(S)
+    for j in range(q):
+        B_j = S_list[j * b: (j + 1) * b]
+        for u in blocks[j]:
+            for v in B_j:
+                G.add_edge(u, v)
+    
+    # Camouflage edges
+    all_blocked = set(S_list[:q * b])
+    for j in range(q):
+        B_j = set(S_list[j * b: (j + 1) * b])
+        S_minus_Bj = S - B_j
+        for u in blocks[j]:
+            for v in S_minus_Bj:
+                if rng.random() < p_cam:
+                    G.add_edge(u, v)
+    
+    # Random relabeling
+    perm = list(range(n))
+    rng.shuffle(perm)
+    mapping = {old: new for old, new in zip(range(n), perm)}
+    G = nx.relabel_nodes(G, mapping)
+    S = {mapping[v] for v in S}
+    
+    return MISInstance(G, S, n, h, 'multi_clique_core',
+                       {'q': q, 'b': b, 'p_inter': p_inter, 'p_cam': p_cam},
+                       seed)
 
-        # Random relabeling
-        perm = list(range(n))
-        rng.shuffle(perm)
-        mapping = {old: new for old, new in zip(range(n), perm)}
-        G = nx.relabel_nodes(G, mapping)
-        S = {mapping[v] for v in S}
 
-        return MISInstance(
-            graph=G, planted_set=S, n=n, h=h,
-            family='multi_clique_core',
-            params={'q': q, 'b': b, 'p_inter': p_inter, 'p_cam': p_cam},
-            seed=seed
-        )
+# ============================================================
+# SECTION 3: Python Solvers (no external dependencies)
+# ============================================================
 
-    def _camouflaged_clique(self, n: int, h: int, params: Dict, seed: int) -> MISInstance:
-        """
-        Enhanced multi-clique core with degree equalization.
-        After base construction, add/remove edges to make degree
-        distribution of S and V\S overlap, defeating degree-based attacks.
+def greedy_min_degree(G: nx.Graph) -> Set[int]:
+    """Greedy MIS: always pick the minimum-degree vertex."""
+    H = G.copy()
+    mis = set()
+    while H.number_of_nodes() > 0:
+        v = min(H.nodes(), key=lambda x: H.degree(x))
+        mis.add(v)
+        to_remove = set(H.neighbors(v)) | {v}
+        H.remove_nodes_from(to_remove)
+    return mis
 
-        params: same as multi_clique_core plus
-          - target_degree: target average degree for S vertices
-        """
-        # Start with multi-clique core
-        inst = self._multi_clique_core(n, h, params, seed)
-        G = inst.graph
-        S = inst.planted_set
-        rng = np.random.RandomState(seed + 1000)
 
-        # Compute current degree statistics
-        S_degrees = [G.degree(v) for v in S]
-        R_degrees = [G.degree(v) for v in G.nodes() if v not in S]
-
-        if not R_degrees:
-            return inst
-
-        target_deg = params.get('target_degree', int(np.median(R_degrees)))
-
-        # For S vertices with degree < target, add edges to R
-        R_list = [v for v in G.nodes() if v not in S]
-        for v in S:
-            current_deg = G.degree(v)
-            deficit = target_deg - current_deg
-            if deficit > 0:
-                # Add edges to random R vertices (not already neighbors)
-                non_neighbors = [u for u in R_list if not G.has_edge(v, u)]
-                n_add = min(deficit, len(non_neighbors))
-                if n_add > 0:
-                    targets = rng.choice(non_neighbors, size=n_add, replace=False)
-                    for u in targets:
-                        G.add_edge(v, u)
-
-        inst.family = 'camouflaged_clique'
-        return inst
-
-    def _geometric_planted(self, n: int, h: int, params: Dict, seed: int) -> MISInstance:
-        """
-        Random geometric graph with planted independent set.
-        Vertices are points in [0,1]^dim; edges connect points within
-        distance r. Planted set vertices are placed far apart.
-
-        params:
-          - dim: dimension (default: 2)
-          - r: connection radius (default: auto)
-        """
-        rng = np.random.RandomState(seed)
-        dim = params.get('dim', 2)
-        r = params.get('r', None)
-
-        if r is None:
-            # Choose r to get moderate density
-            r = 1.5 * (np.log(n) / n) ** (1.0 / dim)
-
-        # Place planted set vertices on a grid-like structure (well-separated)
-        S_points = np.zeros((h, dim))
-        grid_side = int(np.ceil(h ** (1.0 / dim)))
-        idx = 0
-        for coords in np.ndindex(*([grid_side] * dim)):
-            if idx >= h:
+def local_search_1_2_swap(G: nx.Graph, init_mis: Set[int],
+                          max_iter: int = 5000) -> Set[int]:
+    """Improve an MIS via (1,2)-swap local search."""
+    adj = {v: set(G.neighbors(v)) for v in G.nodes()}
+    current = set(init_mis)
+    best = set(current)
+    
+    rng = np.random.RandomState(42)
+    for _ in range(max_iter):
+        improved = False
+        nodes_list = list(current)
+        rng.shuffle(nodes_list)
+        
+        for v_out in nodes_list:
+            candidate = current - {v_out}
+            # Vertices freed by removing v_out
+            freed = set()
+            for u in adj[v_out]:
+                if u not in candidate:
+                    blockers = adj[u] & candidate
+                    if not blockers:
+                        freed.add(u)
+            
+            # Try adding 2 from freed
+            added = set()
+            for u in freed:
+                if not (adj[u] & (candidate | added)):
+                    added.add(u)
+                    if len(added) >= 2:
+                        break
+            
+            if len(added) >= 2:
+                current = candidate | added
+                improved = True
                 break
-            S_points[idx] = np.array(coords) / (grid_side + 1) + 0.5 / (grid_side + 1)
-            idx += 1
-        # Ensure planted points are > r apart (scale if needed)
-        min_dist = np.inf
-        for i in range(h):
-            for j in range(i + 1, h):
-                d = np.linalg.norm(S_points[i] - S_points[j])
-                min_dist = min(min_dist, d)
-        if min_dist < r * 1.1:
-            S_points *= (r * 1.2) / min_dist
-            S_points = S_points % 1.0  # wrap to [0,1]^dim
+        
+        if len(current) > len(best):
+            best = set(current)
+        if not improved:
+            break
+    
+    return best
 
-        # Place remaining vertices randomly
-        R_points = rng.random((n - h, dim))
-        all_points = np.vstack([S_points, R_points])
 
-        # Build graph: connect points within distance r
-        G = nx.Graph()
-        G.add_nodes_from(range(n))
-        S = set(range(h))
+def spectral_mis(G: nx.Graph) -> Set[int]:
+    """Spectral method: use adjacency eigenvector to find planted IS."""
+    n = G.number_of_nodes()
+    if n < 3 or G.number_of_edges() == 0:
+        return set(G.nodes())
+    
+    try:
+        from scipy.sparse.linalg import eigsh
+        A = nx.adjacency_matrix(G, nodelist=sorted(G.nodes())).astype(float)
+        _, vecs = eigsh(A, k=1, which='LA')
+        v1 = vecs[:, 0]
+        
+        # Planted vertices tend to have smaller eigenvector entries
+        threshold = np.median(v1)
+        candidates = [i for i in range(n) if v1[i] < threshold]
+        
+        # Greedily clean up
+        mis = set()
+        for v in sorted(candidates, key=lambda x: G.degree(x)):
+            if not (set(G.neighbors(v)) & mis):
+                mis.add(v)
+        return mis
+    except Exception:
+        return greedy_min_degree(G)
 
-        for i in range(n):
-            for j in range(i + 1, n):
-                if i in S and j in S:
-                    continue
-                dist = np.linalg.norm(all_points[i] - all_points[j])
-                # Use toroidal distance for wrap-around
-                diff = np.abs(all_points[i] - all_points[j])
-                diff = np.minimum(diff, 1.0 - diff)
-                dist = np.linalg.norm(diff)
-                if dist < r:
-                    G.add_edge(i, j)
 
-        # Random relabeling
-        perm = list(range(n))
-        rng.shuffle(perm)
-        mapping = {old: new for old, new in zip(range(n), perm)}
-        G = nx.relabel_nodes(G, mapping)
-        S = {mapping[v] for v in S}
+def exact_mis_small(G: nx.Graph) -> Set[int]:
+    """Exact MIS via complement clique (only for n ≤ 60)."""
+    if G.number_of_nodes() > 60:
+        return set()
+    complement = nx.complement(G)
+    cliques = list(nx.find_cliques(complement))
+    if cliques:
+        return set(max(cliques, key=len))
+    return set()
 
-        return MISInstance(
-            graph=G, planted_set=S, n=n, h=h,
-            family='geometric_planted',
-            params={'dim': dim, 'r': r}, seed=seed
-        )
 
-    def generate_suite(self, families: List[str], sizes: List[int],
-                       h_ratios: List[float], seeds_per: int = 5) -> List[MISInstance]:
+# ============================================================
+# SECTION 4: KaMIS Wrapper
+# ============================================================
+
+class KaMISRunner:
+    """Python wrapper around KaMIS binaries."""
+    
+    def __init__(self, kamis_path: str = None):
         """
-        Generate a complete benchmark suite.
-
         Args:
-            families: list of family names
-            sizes: list of n values
-            h_ratios: list of h/sqrt(n) ratios (e.g., [0.5, 1.0, 2.0])
-            seeds_per: number of random seeds per configuration
-
-        Returns:
-            List of MISInstance objects
+            kamis_path: path to KaMIS deploy/ directory.
+                        If None, tries ./KaMIS/deploy/ and ../KaMIS/deploy/
         """
-        instances = []
-        for family in families:
-            for n in sizes:
-                for ratio in h_ratios:
-                    h = max(2, int(ratio * np.sqrt(n)))
-                    h = min(h, n - 2)  # leave room for non-S vertices
-                    for s in range(seeds_per):
-                        seed = self.base_seed + hash((family, n, h, s)) % (2**31)
-                        try:
-                            inst = self.generate(family, n, h, seed=seed)
-                            if inst.verify():
-                                instances.append(inst)
-                            else:
-                                warnings.warn(f"Verification failed: {inst.instance_id}")
-                        except Exception as e:
-                            warnings.warn(f"Generation failed for {family}, n={n}, h={h}: {e}")
-        return instances
-
-
-# ============================================================
-# SECTION 2: DIFFICULTY METRICS
-# ============================================================
-
-class DifficultyAnalyzer:
-    """Compute multi-dimensional difficulty metrics for MIS instances."""
-
-    @staticmethod
-    def compute_metrics(inst: MISInstance) -> Dict:
-        """Compute structural, spectral, and algorithmic difficulty metrics."""
-        G = inst.graph
-        n = inst.n
-        metrics = {}
-
-        # --- Structural metrics ---
-        degrees = [d for _, d in G.degree()]
-        metrics['n_vertices'] = n
-        metrics['n_edges'] = G.number_of_edges()
-        metrics['density'] = 2 * G.number_of_edges() / max(n * (n - 1), 1)
-        metrics['avg_degree'] = np.mean(degrees)
-        metrics['max_degree'] = max(degrees) if degrees else 0
-        metrics['min_degree'] = min(degrees) if degrees else 0
-        metrics['degree_std'] = np.std(degrees)
-
-        # Degeneracy (k-core number)
-        metrics['degeneracy'] = max(nx.core_number(G).values()) if n > 0 else 0
-
-        # Clustering coefficient
-        metrics['avg_clustering'] = nx.average_clustering(G)
-
-        # Planted set degree statistics
-        S = inst.planted_set
-        S_degrees = [G.degree(v) for v in S]
-        R_degrees = [G.degree(v) for v in G.nodes() if v not in S]
-        metrics['planted_avg_degree'] = np.mean(S_degrees) if S_degrees else 0
-        metrics['non_planted_avg_degree'] = np.mean(R_degrees) if R_degrees else 0
-        metrics['degree_gap'] = abs(metrics['planted_avg_degree'] - metrics['non_planted_avg_degree'])
-
-        # --- Spectral metrics ---
-        if n > 2 and G.number_of_edges() > 0:
+        if kamis_path is None:
+            for candidate in ['./KaMIS/deploy', '../KaMIS/deploy',
+                              './KaMIS-master/deploy', '../KaMIS-master/deploy',
+                              './deploy']:
+                if os.path.isdir(candidate):
+                    kamis_path = candidate
+                    break
+        
+        self.kamis_path = kamis_path
+        self.available = kamis_path is not None and os.path.isdir(kamis_path)
+        
+        if self.available:
+            self.binaries = {}
+            for name in ['redumis', 'online_mis', 'weighted_branch_reduce']:
+                path = os.path.join(kamis_path, name)
+                if os.path.isfile(path):
+                    self.binaries[name] = path
+            print(f"KaMIS found at {kamis_path}: {list(self.binaries.keys())}")
+        else:
+            self.binaries = {}
+            print("KaMIS not found. Python-only solvers will be used.")
+    
+    def solve(self, G: nx.Graph, solver: str = 'online_mis',
+              time_limit: float = 30.0, seed: int = 0) -> Tuple[Set[int], float]:
+        """
+        Run a KaMIS solver on the graph.
+        
+        Returns:
+            (independent_set, runtime_seconds)
+        """
+        if not self.available or solver not in self.binaries:
+            return set(), -1.0
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            graph_file = os.path.join(tmpdir, 'graph.metis')
+            output_file = os.path.join(tmpdir, 'solution.txt')
+            
+            write_metis(G, graph_file)
+            
+            cmd = [
+                self.binaries[solver],
+                graph_file,
+                f'--time_limit={time_limit}',
+                f'--seed={seed}',
+                f'--output={output_file}',
+                '--console_log'
+            ]
+            
+            start = time.time()
             try:
-                L = nx.laplacian_matrix(G).astype(float)
-                k = min(5, n - 2)
-                eigenvalues = eigsh(L, k=k, which='SM', return_eigenvectors=False)
-                eigenvalues = np.sort(eigenvalues)
-                # Filter out near-zero eigenvalues
-                nonzero_eigs = eigenvalues[eigenvalues > 1e-10]
-                metrics['algebraic_connectivity'] = float(nonzero_eigs[0]) if len(nonzero_eigs) > 0 else 0.0
-
-                top_eigs = eigsh(L, k=min(3, n - 1), which='LM', return_eigenvectors=False)
-                metrics['spectral_radius_laplacian'] = float(max(top_eigs))
-
-                if metrics['algebraic_connectivity'] > 1e-10:
-                    metrics['spectral_gap_ratio'] = (
-                        metrics['spectral_radius_laplacian'] / metrics['algebraic_connectivity']
-                    )
+                result = subprocess.run(
+                    cmd, capture_output=True, text=True,
+                    timeout=time_limit + 10
+                )
+                elapsed = time.time() - start
+                
+                if os.path.isfile(output_file):
+                    mis = read_kamis_solution(output_file, G.number_of_nodes())
+                    return mis, elapsed
                 else:
-                    metrics['spectral_gap_ratio'] = float('inf')
-            except Exception:
-                metrics['algebraic_connectivity'] = None
-                metrics['spectral_radius_laplacian'] = None
-                metrics['spectral_gap_ratio'] = None
-        else:
-            metrics['algebraic_connectivity'] = 0.0
-            metrics['spectral_radius_laplacian'] = 0.0
-            metrics['spectral_gap_ratio'] = float('inf')
-
-        # --- Independent set count estimate (for small graphs) ---
-        if n <= 25:
-            metrics['exact_alpha'] = len(max(nx.find_cliques(nx.complement(G)), key=len, default=[]))
-        else:
-            metrics['exact_alpha'] = None
-
-        metrics['planted_set_size'] = inst.h
-        metrics['h_over_sqrt_n'] = inst.h / np.sqrt(n)
-
-        return metrics
+                    print(f"  KaMIS produced no output file. stderr: {result.stderr[:200]}")
+                    return set(), elapsed
+                    
+            except subprocess.TimeoutExpired:
+                return set(), time_limit
+            except Exception as e:
+                print(f"  KaMIS error: {e}")
+                return set(), -1.0
 
 
 # ============================================================
-# SECTION 3: CLASSICAL SOLVERS
+# SECTION 5: ET Computation
+# ============================================================
+
+def compute_ET_toy(n: int) -> Dict:
+    """Compute ET for the toy polynomial f = x1 + ... + xn - n.
+    Closed-form from Li's paper."""
+    ET = 2.0 * n * n
+    for i in range(1, n):
+        j = n - i
+        ET += j * j + j * j / (n - j + 1)
+    
+    return {
+        'ET': ET,
+        'n': n,
+        'ratio_to_n3_over_3': ET / (n**3 / 3),
+        'z_norm_sq': n,
+    }
+
+
+def count_independent_sets_by_size(G: nx.Graph, S: Set[int],
+                                   max_size: int = None) -> Dict:
+    """Count independent sets by size, decomposed by overlap with S.
+    Only feasible for small graphs (n ≤ 20)."""
+    n = G.number_of_nodes()
+    h = len(S)
+    if max_size is None:
+        max_size = h
+    if n > 20:
+        return {'error': 'too_large'}
+    
+    nodes = sorted(G.nodes())
+    edges = set()
+    for u, v in G.edges():
+        edges.add((min(u, v), max(u, v)))
+    
+    def is_independent(subset):
+        s = list(subset)
+        for i in range(len(s)):
+            for j in range(i + 1, len(s)):
+                if (min(s[i], s[j]), max(s[i], s[j])) in edges:
+                    return False
+        return True
+    
+    counts = {}  # (size, t) -> count where t = |T \ S|
+    total_by_size = {}
+    
+    for size in range(1, max_size + 1):
+        total = 0
+        for subset in combinations(nodes, size):
+            if is_independent(set(subset)):
+                t = len(set(subset) - S)
+                key = (size, t)
+                counts[key] = counts.get(key, 0) + 1
+                total += 1
+        total_by_size[size] = total
+    
+    # Check the counting condition from the paper
+    counting_ok = True
+    for i in range(1, h + 1):
+        if i in total_by_size:
+            bound = 10 * n * comb(h, i)
+            if total_by_size[i] > bound:
+                counting_ok = False
+    
+    return {
+        'counts_by_size_and_overlap': {str(k): v for k, v in counts.items()},
+        'total_by_size': total_by_size,
+        'counting_condition_ok': counting_ok,
+        'n': n, 'h': h,
+    }
+
+
+# ============================================================
+# SECTION 6: Benchmarking Pipeline
 # ============================================================
 
 @dataclass
 class SolverResult:
-    """Result from a classical MIS solver."""
-    independent_set: Set[int]
-    size: int
+    name: str
+    mis_size: int
+    overlap_with_planted: int
+    recall: float
     runtime: float
-    solver_name: str
-    is_optimal: bool = False
-    extra: Dict = field(default_factory=dict)
+    is_verified: bool
 
 
-class MISSolver(ABC):
-    """Abstract base class for MIS solvers."""
-
-    def __init__(self, timeout: float = 300.0):
-        self.timeout = timeout
-
-    @abstractmethod
-    def solve(self, G: nx.Graph) -> SolverResult:
-        pass
-
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        pass
+def verify_independent_set(G: nx.Graph, S: Set[int]) -> bool:
+    """Check that S is indeed an independent set in G."""
+    for u in S:
+        for v in S:
+            if u != v and G.has_edge(u, v):
+                return False
+    return True
 
 
-class GreedyMinDegreeSolver(MISSolver):
-    """Greedy algorithm: iteratively select minimum-degree vertex."""
-
-    @property
-    def name(self) -> str:
-        return "Greedy_MinDeg"
-
-    def solve(self, G: nx.Graph) -> SolverResult:
-        start = time.time()
-        H = G.copy()
-        independent_set = set()
-
-        while H.number_of_nodes() > 0:
-            # Select vertex with minimum degree
-            v = min(H.nodes(), key=lambda x: H.degree(x))
-            independent_set.add(v)
-            # Remove v and its neighbors
-            to_remove = set(H.neighbors(v)) | {v}
-            H.remove_nodes_from(to_remove)
-
-        runtime = time.time() - start
-        return SolverResult(
-            independent_set=independent_set,
-            size=len(independent_set),
-            runtime=runtime,
-            solver_name=self.name
-        )
-
-
-class GreedyMaxDegreeSolver(MISSolver):
-    """Greedy: remove max-degree vertex iteratively, then collect isolated."""
-
-    @property
-    def name(self) -> str:
-        return "Greedy_MaxDegRemoval"
-
-    def solve(self, G: nx.Graph) -> SolverResult:
-        start = time.time()
-        H = G.copy()
-
-        while H.number_of_edges() > 0:
-            v = max(H.nodes(), key=lambda x: H.degree(x))
-            H.remove_node(v)
-
-        independent_set = set(H.nodes())
-        runtime = time.time() - start
-        return SolverResult(
-            independent_set=independent_set,
-            size=len(independent_set),
-            runtime=runtime,
-            solver_name=self.name
-        )
-
-
-class LocalSearchSolver(MISSolver):
-    """
-    Iterated local search with (1,2)-swap neighborhood.
-    Start from greedy solution, try swapping one vertex out for up to two in.
-    """
-
-    def __init__(self, timeout: float = 300.0, max_iter: int = 10000,
-                 n_restarts: int = 5):
-        super().__init__(timeout)
-        self.max_iter = max_iter
-        self.n_restarts = n_restarts
-
-    @property
-    def name(self) -> str:
-        return "LocalSearch_12swap"
-
-    def _is_independent(self, G: nx.Graph, S: Set[int]) -> bool:
-        for u in S:
-            for v in S:
-                if u < v and G.has_edge(u, v):
-                    return False
-        return True
-
-    def _greedy_init(self, G: nx.Graph, rng: np.random.RandomState) -> Set[int]:
-        """Randomized greedy initialization."""
-        H = G.copy()
-        IS = set()
-        nodes = list(H.nodes())
-        rng.shuffle(nodes)
-
-        for v in nodes:
-            if v in H:
-                neighbors_in_IS = set(H.neighbors(v)) & IS
-                if not neighbors_in_IS:
-                    IS.add(v)
-        return IS
-
-    def solve(self, G: nx.Graph) -> SolverResult:
-        start = time.time()
-        best_IS = set()
-        rng = np.random.RandomState(42)
-
-        for restart in range(self.n_restarts):
-            if time.time() - start > self.timeout:
-                break
-
-            current_IS = self._greedy_init(G, rng)
-
-            for iteration in range(self.max_iter):
-                if time.time() - start > self.timeout:
-                    break
-
-                improved = False
-                IS_list = list(current_IS)
-                rng.shuffle(IS_list)
-
-                for v_out in IS_list:
-                    # Try removing v_out and adding neighbors' non-neighbors
-                    candidate = current_IS - {v_out}
-
-                    # Find vertices that could be added
-                    blocked_by_v = set()
-                    for u in G.neighbors(v_out):
-                        if u not in current_IS:
-                            # u is blocked only by vertices in IS that are its neighbors
-                            blockers = set(G.neighbors(u)) & candidate
-                            if not blockers:
-                                blocked_by_v.add(u)
-
-                    # Try adding up to 2 from blocked_by_v
-                    added = set()
-                    for u in blocked_by_v:
-                        if not (set(G.neighbors(u)) & (candidate | added)):
-                            added.add(u)
-                            if len(added) >= 2:
-                                break
-
-                    if len(added) >= 2:
-                        current_IS = candidate | added
-                        improved = True
-                        break
-
-                if not improved:
-                    break
-
-            if len(current_IS) > len(best_IS):
-                best_IS = current_IS.copy()
-
-        runtime = time.time() - start
-        return SolverResult(
-            independent_set=best_IS,
-            size=len(best_IS),
-            runtime=runtime,
-            solver_name=self.name
-        )
-
-
-class SimulatedAnnealingSolver(MISSolver):
-    """Simulated annealing for MIS."""
-
-    def __init__(self, timeout: float = 300.0, n_steps: int = 50000,
-                 T_init: float = 2.0, T_final: float = 0.01):
-        super().__init__(timeout)
-        self.n_steps = n_steps
-        self.T_init = T_init
-        self.T_final = T_final
-
-    @property
-    def name(self) -> str:
-        return "SimulatedAnnealing"
-
-    def solve(self, G: nx.Graph) -> SolverResult:
-        start = time.time()
-        rng = np.random.RandomState(42)
-        nodes = list(G.nodes())
-        n = len(nodes)
-
-        # Initialize with greedy
-        solver = GreedyMinDegreeSolver()
-        init_result = solver.solve(G)
-        current_IS = init_result.independent_set.copy()
-        best_IS = current_IS.copy()
-
-        adj = {v: set(G.neighbors(v)) for v in nodes}
-
-        alpha = (self.T_final / self.T_init) ** (1.0 / self.n_steps)
-        T = self.T_init
-
-        for step in range(self.n_steps):
-            if time.time() - start > self.timeout:
-                break
-
-            T *= alpha
-            v = nodes[rng.randint(n)]
-
-            if v in current_IS:
-                # Try removing v
-                delta = -1
-                if rng.random() < np.exp(delta / max(T, 1e-10)):
-                    current_IS.remove(v)
-            else:
-                # Try adding v (must remove conflicting neighbors)
-                conflicts = adj[v] & current_IS
-                delta = 1 - len(conflicts)
-                if delta > 0 or rng.random() < np.exp(delta / max(T, 1e-10)):
-                    current_IS -= conflicts
-                    current_IS.add(v)
-
-            if len(current_IS) > len(best_IS):
-                best_IS = current_IS.copy()
-
-        runtime = time.time() - start
-        return SolverResult(
-            independent_set=best_IS,
-            size=len(best_IS),
-            runtime=runtime,
-            solver_name=self.name
-        )
-
-
-class SpectralPlantedSolver(MISSolver):
-    """
-    Spectral method for planted independent set detection.
-    Uses the top eigenvector of the adjacency matrix.
-    """
-
-    @property
-    def name(self) -> str:
-        return "Spectral_Planted"
-
-    def solve(self, G: nx.Graph) -> SolverResult:
-        start = time.time()
-        n = G.number_of_nodes()
-        nodes = sorted(G.nodes())
-        node_to_idx = {v: i for i, v in enumerate(nodes)}
-
-        if n <= 2 or G.number_of_edges() == 0:
-            return SolverResult(
-                independent_set=set(nodes),
-                size=n,
-                runtime=time.time() - start,
-                solver_name=self.name
-            )
-
-        # Build adjacency matrix
-        A = nx.adjacency_matrix(G, nodelist=nodes).astype(float)
-
+def run_all_solvers(inst: MISInstance,
+                    kamis: KaMISRunner) -> List[SolverResult]:
+    """Run all available solvers on one instance."""
+    G = inst.graph
+    results = []
+    
+    # --- Python solvers ---
+    solvers_py = {
+        'Greedy_MinDeg': lambda: greedy_min_degree(G),
+        'LocalSearch': lambda: local_search_1_2_swap(G, greedy_min_degree(G)),
+        'Spectral': lambda: spectral_mis(G),
+    }
+    
+    if inst.n <= 60:
+        solvers_py['Exact_NX'] = lambda: exact_mis_small(G)
+    
+    for name, solver_fn in solvers_py.items():
+        t0 = time.time()
         try:
-            # Top eigenvector of adjacency matrix
-            _, vecs = eigsh(A, k=1, which='LA')
-            v1 = vecs[:, 0]
-
-            # For planted IS, the top eigenvector tends to have
-            # smaller (more negative) values on planted vertices
-            # since they have fewer connections
-            # Threshold: take vertices with smallest eigenvector values
-            threshold = np.median(v1)
-            candidate = set()
-            for i, node in enumerate(nodes):
-                if v1[i] < threshold:
-                    candidate.add(node)
-
-            # Clean up: greedily remove conflicts
-            IS = set()
-            for v in sorted(candidate, key=lambda x: G.degree(x)):
-                if not (set(G.neighbors(v)) & IS):
-                    IS.add(v)
-
-        except Exception:
-            IS = GreedyMinDegreeSolver().solve(G).independent_set
-
-        runtime = time.time() - start
-        return SolverResult(
-            independent_set=IS,
-            size=len(IS),
-            runtime=runtime,
-            solver_name=self.name
-        )
-
-
-class NetworkXExactSolver(MISSolver):
-    """
-    Exact MIS via complement graph max clique (NetworkX).
-    Only feasible for small graphs (n <= ~60).
-    """
-
-    @property
-    def name(self) -> str:
-        return "Exact_NX_Complement"
-
-    def solve(self, G: nx.Graph) -> SolverResult:
-        start = time.time()
-        n = G.number_of_nodes()
-
-        if n > 80:
-            return SolverResult(
-                independent_set=set(),
-                size=0,
-                runtime=time.time() - start,
-                solver_name=self.name,
-                extra={'status': 'skipped_too_large'}
-            )
-
-        try:
-            complement = nx.complement(G)
-            cliques = list(nx.find_cliques(complement))
-            if cliques:
-                max_clique = max(cliques, key=len)
-                IS = set(max_clique)
-            else:
-                IS = set()
+            mis = solver_fn()
         except Exception as e:
-            IS = set()
-
-        runtime = time.time() - start
-        return SolverResult(
-            independent_set=IS,
-            size=len(IS),
-            runtime=runtime,
-            solver_name=self.name,
-            is_optimal=True
-        )
-
-
-class SATSolver(MISSolver):
-    """
-    MIS via incremental SAT solving (requires python-sat).
-    Encodes as maximum satisfiability problem.
-    """
-
-    @property
-    def name(self) -> str:
-        return "SAT_MaxIS"
-
-    def solve(self, G: nx.Graph) -> SolverResult:
-        start = time.time()
-        n = G.number_of_nodes()
-        nodes = sorted(G.nodes())
-        node_to_var = {v: i + 1 for i, v in enumerate(nodes)}
-
-        try:
-            from pysat.solvers import Glucose3
-            from pysat.card import CardEnc, EncType
-        except ImportError:
-            return SolverResult(
-                independent_set=set(), size=0,
-                runtime=time.time() - start,
-                solver_name=self.name,
-                extra={'status': 'pysat_not_available'}
-            )
-
-        best_IS = set()
-
-        # Binary search on IS size
-        lo, hi = 1, n
-        while lo <= hi:
-            if time.time() - start > self.timeout:
-                break
-
-            mid = (lo + hi) // 2
-
-            solver = Glucose3()
-
-            # Edge constraints: for each edge (u,v), not both in IS
-            for u, v in G.edges():
-                solver.add_clause([-node_to_var[u], -node_to_var[v]])
-
-            # Cardinality: at least mid vertices selected
-            card_clauses = CardEnc.atleast(
-                lits=list(node_to_var.values()),
-                bound=mid,
-                encoding=EncType.seqcounter
-            )
-            for clause in card_clauses:
-                solver.add_clause(clause)
-
-            if solver.solve():
-                model = solver.get_model()
-                IS = {nodes[abs(lit) - 1] for lit in model
-                      if lit > 0 and abs(lit) <= n}
-                if len(IS) >= len(best_IS):
-                    best_IS = IS
-                lo = mid + 1
-            else:
-                hi = mid - 1
-
-            solver.delete()
-
-        runtime = time.time() - start
-        return SolverResult(
-            independent_set=best_IS,
-            size=len(best_IS),
-            runtime=runtime,
-            solver_name=self.name,
-            is_optimal=(lo > hi)
-        )
+            print(f"    {name} failed: {e}")
+            continue
+        elapsed = time.time() - t0
+        
+        overlap = len(mis & inst.planted_set)
+        recall = overlap / max(inst.h, 1)
+        verified = verify_independent_set(G, mis)
+        
+        results.append(SolverResult(
+            name=name, mis_size=len(mis), overlap_with_planted=overlap,
+            recall=recall, runtime=elapsed, is_verified=verified
+        ))
+    
+    # --- KaMIS solvers ---
+    for solver_name in ['online_mis', 'redumis']:
+        if solver_name in kamis.binaries:
+            tl = 40.0 if inst.n <= 100 else 100.0
+            mis, elapsed = kamis.solve(G, solver_name, time_limit=tl)
+            if mis:
+                overlap = len(mis & inst.planted_set)
+                recall = overlap / max(inst.h, 1)
+                verified = verify_independent_set(G, mis)
+                results.append(SolverResult(
+                    name=f'KaMIS_{solver_name}', mis_size=len(mis),
+                    overlap_with_planted=overlap, recall=recall,
+                    runtime=elapsed, is_verified=verified
+                ))
+    
+    return results
 
 
-# ============================================================
-# SECTION 4: ET COMPUTATION (for small instances)
-# ============================================================
+def print_results_table(all_results):
+    print("\n" + "=" * 90)
+    print(f"{'Instance':30s} {'Solver':22s} {'Size':>5s} {'Recall':>7s} "
+          f"{'Time(s)':>8s} {'Valid':>5s}")
+    print("-" * 90)
 
-class ETComputer:
-    """
-    Compute the ET parameter for the planted MIS Macaulay system.
-    Only feasible for small n (n <= 16 or so) due to 2^n dimension.
-    """
-
-    @staticmethod
-    def compute_ET_toy(n: int) -> Dict:
-        """
-        Compute ET for the toy polynomial f = x1 + ... + xn - n.
-        Returns exact ET and components.
-        """
-        # Use the closed-form solution
-        ET = 2 * n**2  # contribution from empty row
-        for i in range(1, n):
-            j = n - i
-            term = j**2 + j**2 / (n - j + 1)
-            ET += term
-
-        # Also compute p_k values
-        from math import comb
-        p_values = {k: 1.0 / comb(n, k) for k in range(n + 1)}
-
-        return {
-            'ET': ET,
-            'ET_theoretical': n * (n - 1) * (2*n - 1) / 6 + 2 * n**2,  # approximate
-            'p_values': p_values,
-            'n': n,
-            'z_norm_sq': n
-        }
-
-    @staticmethod
-    def compute_ET_mis(G: nx.Graph, S: Set[int], h: int) -> Optional[Dict]:
-        """
-        Compute ET for the planted MIS Macaulay system.
-
-        WARNING: This constructs the explicit Macaulay matrix.
-        Only feasible for very small n (n <= 14).
-
-        Args:
-            G: the graph
-            S: the planted independent set
-            h: size of planted set
-
-        Returns:
-            dict with ET, p vector norms, etc., or None if too large
-        """
-        n = G.number_of_nodes()
-        if n > 14:
-            warnings.warn(f"n={n} too large for explicit ET computation (limit 14)")
-            return None
-
-        from math import comb
-        from itertools import combinations as combs
-
-        nodes = sorted(G.nodes())
-        edges = set(G.edges())
-
-        # Enumerate all multilinear monomials (subsets of [n])
-        # Each nonempty subset T ⊆ [n] corresponds to a column
-        # We only keep "valid" monomials (those not divisible by x_i x_j for (i,j) ∈ E)
-        def is_independent_set(T):
-            T_list = list(T)
-            for i in range(len(T_list)):
-                for j in range(i+1, len(T_list)):
-                    if (T_list[i], T_list[j]) in edges or (T_list[j], T_list[i]) in edges:
-                        return False
-            return True
-
-        # Count independent sets by size
-        IS_counts = {}
-        for size in range(1, n + 1):
-            count = sum(1 for T in combs(nodes, size) if is_independent_set(set(T)))
-            IS_counts[size] = count
-
-        # The counting condition from the paper
-        counting_satisfied = True
-        for i in range(1, h + 1):
-            bound = 10 * n * comb(h, i)  # poly(n) * C(h,i) with small constant
-            if IS_counts.get(i, 0) > bound:
-                counting_satisfied = False
-                break
-
-        # For the full ET computation, we would need to construct the
-        # weighted Macaulay matrix AD and solve for p. This is 2^n x 2^n.
-        # For n <= 14, 2^14 = 16384 which is feasible.
-
-        # Simplified: use the layer-by-layer structure from the paper
-        # ET ≈ Σ_{i=1}^{h} Σ_{t=0}^{i} I_{i,t} / C(h,i)  (approximate)
-
-        # Count I_{i,t}: independent sets of size i with t vertices outside S
-        S_set = set(S)
-        I_by_layer = {}
-        for size in range(1, h + 1):
-            for t in range(size + 1):
-                count = 0
-                # Need exactly (size - t) from S and t from V\S
-                for T_S in combs(sorted(S_set), size - t):
-                    for T_R in combs(sorted(set(nodes) - S_set), t):
-                        T = set(T_S) | set(T_R)
-                        if is_independent_set(T):
-                            count += 1
-                I_by_layer[(size, t)] = count
-
-        # Estimate ET using the approximate formula
-        ET_estimate = 1.0  # p_0^2 * d_0 contribution
-        for i in range(1, h + 1):
-            for t in range(i + 1):
-                I_it = I_by_layer.get((i, t), 0)
-                # p_{m_i,t}^2 * d_{m_i} ≈ 1/C(h,i) (approximate)
-                if comb(h, i) > 0:
-                    ET_estimate += I_it / comb(h, i)
-
-        return {
-            'ET_estimate': ET_estimate,
-            'IS_counts': IS_counts,
-            'I_by_layer': {str(k): v for k, v in I_by_layer.items()},
-            'counting_condition_satisfied': counting_satisfied,
-            'n': n,
-            'h': h,
-            'h_over_sqrt_n': h / np.sqrt(n),
-        }
-
-
-# ============================================================
-# SECTION 5: BENCHMARKING PIPELINE
-# ============================================================
-
-class BenchmarkRunner:
-    """Run all solvers on all instances and collect results."""
-
-    def __init__(self, solvers: List[MISSolver], compute_difficulty: bool = True):
-        self.solvers = solvers
-        self.compute_difficulty = compute_difficulty
-
-    def run(self, instances: List[MISInstance], verbose: bool = True) -> List[Dict]:
-        """
-        Run benchmark suite.
-
-        Returns:
-            List of result dictionaries, one per (instance, solver) pair.
-        """
-        results = []
-        total = len(instances) * len(self.solvers)
-        count = 0
-
-        for inst in instances:
-            # Compute difficulty metrics once per instance
-            if self.compute_difficulty:
-                try:
-                    difficulty = DifficultyAnalyzer.compute_metrics(inst)
-                except Exception as e:
-                    difficulty = {'error': str(e)}
-            else:
-                difficulty = {}
-
-            for solver in self.solvers:
-                count += 1
-                if verbose:
-                    print(f"  [{count}/{total}] {solver.name} on {inst.instance_id}...",
-                          end='', flush=True)
-
-                try:
-                    result = solver.solve(inst.graph)
-
-                    # Compute overlap with planted set
-                    overlap = len(result.independent_set & inst.planted_set)
-                    recall = overlap / max(inst.h, 1)
-                    precision = overlap / max(result.size, 1)
-
-                    entry = {
-                        'instance_id': inst.instance_id,
-                        'family': inst.family,
-                        'n': inst.n,
-                        'h': inst.h,
-                        'h_over_sqrt_n': inst.h / np.sqrt(inst.n),
-                        'seed': inst.seed,
-                        'solver': solver.name,
-                        'solution_size': result.size,
-                        'runtime': result.runtime,
-                        'is_optimal': result.is_optimal,
-                        'planted_overlap': overlap,
-                        'planted_recall': recall,
-                        'planted_precision': precision,
-                        **{f'diff_{k}': v for k, v in difficulty.items()
-                           if isinstance(v, (int, float)) and v is not None},
-                    }
-                    results.append(entry)
-
-                    if verbose:
-                        print(f" size={result.size}, recall={recall:.2f}, "
-                              f"time={result.runtime:.3f}s")
-
-                except Exception as e:
-                    if verbose:
-                        print(f" ERROR: {e}")
-                    results.append({
-                        'instance_id': inst.instance_id,
-                        'family': inst.family,
-                        'n': inst.n,
-                        'h': inst.h,
-                        'solver': solver.name,
-                        'error': str(e),
-                    })
-
-        return results
-
-    @staticmethod
-    def summarize(results: List[Dict]) -> str:
-        """Generate text summary of results."""
-        lines = []
-        lines.append("=" * 70)
-        lines.append("BENCHMARK SUMMARY")
-        lines.append("=" * 70)
-
-        # Group by family and solver
-        from collections import defaultdict
-        by_family_solver = defaultdict(list)
+    for inst_id, bundle in all_results.items():
+        results = bundle['results']
         for r in results:
-            if 'error' not in r:
-                key = (r['family'], r['solver'])
-                by_family_solver[key].append(r)
-
-        families = sorted(set(r.get('family', '?') for r in results))
-        solvers = sorted(set(r.get('solver', '?') for r in results))
-
-        for family in families:
-            lines.append(f"\n--- Family: {family} ---")
-            for solver in solvers:
-                key = (family, solver)
-                data = by_family_solver.get(key, [])
-                if not data:
-                    continue
-                sizes = [d['solution_size'] for d in data]
-                recalls = [d['planted_recall'] for d in data]
-                times = [d['runtime'] for d in data]
-                lines.append(
-                    f"  {solver:30s}: "
-                    f"avg_size={np.mean(sizes):.1f}, "
-                    f"avg_recall={np.mean(recalls):.3f}, "
-                    f"avg_time={np.mean(times):.3f}s "
-                    f"({len(data)} instances)"
-                )
-
-        return '\n'.join(lines)
+            print(f"{inst_id:30s} {r.name:22s} {r.mis_size:5d} "
+                  f"{r.recall:7.3f} {r.runtime:8.3f} "
+                  f"{'✓' if r.is_verified else '✗':>5s}")
+        print("-" * 90)
 
 
 # ============================================================
-# SECTION 6: MAIN ENTRY POINT
+# SECTION 7: Main
 # ============================================================
 
-def run_full_benchmark(
-    sizes: List[int] = None,
-    h_ratios: List[float] = None,
-    families: List[str] = None,
-    seeds_per: int = 3,
-    output_dir: str = "benchmark_results"
-):
-    """
-    Run the complete classical benchmarking suite.
+def main():
+    parser = argparse.ArgumentParser(description='MIS Benchmarking Suite')
+    parser.add_argument('--full', action='store_true',
+                        help='Run full benchmark (larger graphs)')
+    parser.add_argument('--kamis_path', type=str, default=None,
+                        help='Path to KaMIS deploy/ directory')
+    parser.add_argument('--output', type=str, default='results.json',
+                        help='Output file for results')
+    args = parser.parse_args()
+    
+    print("=" * 60)
+    print("  MIS Classical Benchmarking Suite")
+    print("=" * 60)
+    
+    # Initialize KaMIS
+    kamis = KaMISRunner(args.kamis_path)
+    
+    # === Part 1: Toy ET Validation ===
+    print("\n--- Toy ET Validation (f = x1 + ... + xn - n) ---")
+    print(f"{'n':>5s}  {'ET':>12s}  {'n^3/3':>12s}  {'Ratio':>8s}")
+    for n_toy in [5, 8, 10, 15, 20, 30, 50]:
+        et = compute_ET_toy(n_toy)
+        print(f"{n_toy:5d}  {et['ET']:12.1f}  {n_toy**3/3:12.1f}  "
+              f"{et['ratio_to_n3_over_3']:8.4f}")
+    
+    # === Part 2: Small Instance IS Counting ===
+    print("\n--- Independent Set Counting (small instances) ---")
+    for n_small, h_small in [(10, 4), (12, 4), (14, 5), (16, 5)]:
+        inst = gen_erdos_renyi_planted(n_small, h_small, p=0.5, seed=100)
+        if inst.verify():
+            counts = count_independent_sets_by_size(inst.graph, inst.planted_set)
+            print(f"  n={n_small}, h={h_small}: counting_ok={counts.get('counting_condition_ok')}")
+            for sz, cnt in sorted(counts.get('total_by_size', {}).items()):
+                bnd = comb(h_small, sz)
+                ratio = cnt / max(bnd, 1)
+                print(f"    I_{sz} = {cnt:6d},  C(h,{sz}) = {bnd:6d},  "
+                      f"ratio = {ratio:.2f}")
+    
+    # === Part 3: Solver Comparison ===
+    print("\n--- Solver Comparison ---")
+    
+    if args.full:
+        configs = [
+            ('erdos_renyi', 625, 25, {'p': 0.01}),
+            ('erdos_renyi', 400, 20, {'p': 0.01}),
+            ('erdos_renyi', 50, 7, {'p': 0.01}),
+            ('erdos_renyi', 100, 10, {'p': 0.01}),
+            ('erdos_renyi', 200, 14, {'p': 0.01}),
 
-    This is the main entry point for the benchmarking campaign.
-    """
-    if sizes is None:
-        sizes = [30, 50, 80, 120]
-    if h_ratios is None:
-        h_ratios = [0.5, 1.0, 1.5, 2.0]  # multiples of sqrt(n)
-    if families is None:
-        families = [
-            'erdos_renyi_planted',
-            'multi_clique_core',
-            'camouflaged_clique',
-            'geometric_planted',
+            ('erdos_renyi', 625, 25, {'p': 0.001}),
+            ('erdos_renyi', 400, 20, {'p': 0.001}),
+            ('erdos_renyi', 50, 7, {'p': 0.001}),
+            ('erdos_renyi', 100, 10, {'p': 0.001}),
+            ('erdos_renyi', 200, 14, {'p': 0.001}),
+            
+            ('erdos_renyi', 625, 25, {'p': 0.005}),
+            ('erdos_renyi', 400, 20, {'p': 0.005}),
+            ('erdos_renyi', 50, 7, {'p': 0.005}),
+            ('erdos_renyi', 100, 10, {'p': 0.005}),
+            ('erdos_renyi', 200, 14, {'p': 0.005}),
+           
         ]
+    else:
+        configs = [
+            ('erdos_renyi', 100, 10, {'p': 0.2}),
+            ('erdos_renyi', 50, 10, {'p': 0.5}),
+            ('erdos_renyi', 50, 10, {'p': 0.8}),
+            ('multi_clique_core', 20, 10, {'q': 3, 'b': 2, 'p_inter': 0.3, 'p_cam': 0.2}),
+            ('multi_clique_core', 50, 10, {'q': 3, 'b': 2, 'p_inter': 0.6, 'p_cam': 0.5})
+       
+        ]
+    
+    all_results = {}
 
-    print("=" * 70)
-    print("MIS CLASSICAL BENCHMARKING SUITE")
-    print("=" * 70)
+    for family, n, h, params in configs:
+        for seed in [42, 123, 456]:
+            if family == 'erdos_renyi':
+                inst = gen_erdos_renyi_planted(n, h, params.get('p', 0.5), seed)
+            elif family == 'multi_clique_core':
+                inst = gen_multi_clique_core(n, h, seed=seed, **params)
+            else:
+                continue
 
-    # Generate instances
-    print("\n[1/4] Generating instances...")
-    gen = InstanceGenerator(seed=2025)
-    instances = gen.generate_suite(families, sizes, h_ratios, seeds_per)
-    print(f"  Generated {len(instances)} instances")
+            if not inst.verify():
+                print(f"  SKIP {inst.instance_id}: planted set not independent")
+                continue
 
-    # Verify all instances
-    verified = sum(1 for inst in instances if inst.verify())
-    print(f"  Verified: {verified}/{len(instances)}")
+            print(f"\n  Running {inst.instance_id} "
+                f"(n={n}, h={h}, edges={inst.graph.number_of_edges()})...")
 
-    # Initialize solvers
-    print("\n[2/4] Initializing solvers...")
-    solvers = [
-        GreedyMinDegreeSolver(),
-        GreedyMaxDegreeSolver(),
-        LocalSearchSolver(timeout=30, max_iter=5000, n_restarts=3),
-        SimulatedAnnealingSolver(timeout=30, n_steps=20000),
-        SpectralPlantedSolver(),
-        NetworkXExactSolver(),
-    ]
+            results = run_all_solvers(inst, kamis)
+            all_results[inst.instance_id] = {'instance': inst, 'results': results}
 
-    # Try to add SAT solver
-    try:
-        import pysat
-        solvers.append(SATSolver(timeout=60))
-        print(f"  Loaded {len(solvers)} solvers (including SAT)")
-    except ImportError:
-        print(f"  Loaded {len(solvers)} solvers (pysat not available)")
-
-    # Run benchmarks
-    print("\n[3/4] Running benchmarks...")
-    runner = BenchmarkRunner(solvers, compute_difficulty=True)
-    results = runner.run(instances, verbose=True)
-
-    # Summarize
-    print("\n[4/4] Analysis...")
-    summary = BenchmarkRunner.summarize(results)
-    print(summary)
-
-    # Compute ET for small instances
-    print("\n--- ET Computation (small instances) ---")
-    et_results = []
-    for inst in instances:
-        if inst.n <= 14:
-            et = ETComputer.compute_ET_mis(inst.graph, inst.planted_set, inst.h)
-            if et is not None:
-                et_results.append({
-                    'instance_id': inst.instance_id,
-                    'family': inst.family,
-                    **et
-                })
-                print(f"  {inst.instance_id}: ET≈{et['ET_estimate']:.1f}, "
-                      f"counting_ok={et['counting_condition_satisfied']}")
-
-    # Toy ET validation
-    print("\n--- Toy ET Validation ---")
-    for n_toy in [5, 8, 10, 12, 15, 20]:
-        toy = ETComputer.compute_ET_toy(n_toy)
-        print(f"  n={n_toy:3d}: ET={toy['ET']:.1f}, "
-              f"n^3/3={n_toy**3/3:.1f}, "
-              f"ratio={toy['ET']/(n_toy**3/3):.3f}")
-
+            for r in results:
+                status = "✓" if r.is_verified else "✗"
+                print(f"    {r.name:22s}  size={r.mis_size:4d}  "
+                    f"recall={r.recall:.3f}  time={r.runtime:.3f}s  {status}")
+    
+    # Print summary table
+    print_results_table(all_results)
+    
     # Save results
-    os.makedirs(output_dir, exist_ok=True)
+    json_results = {}
+    for inst_id, bundle in all_results.items():
+        inst = bundle['instance']
+        results = bundle['results']
+        json_results[inst_id] = {
+            'family': inst.family,
+            'n': inst.n,
+            'h': inst.h,
+            'params': inst.params,
+            'seed': inst.seed,
+            'num_edges': inst.graph.number_of_edges(),
+            'results': [
+                {
+                    'solver': r.name,
+                    'size': r.mis_size,
+                    'overlap': r.overlap_with_planted,
+                    'recall': r.recall,
+                    'runtime': r.runtime,
+                    'verified': r.is_verified
+                }
+                for r in results
+            ]
+        }
+    with open(args.output, 'w') as f:
+        json.dump(json_results, f, indent=2)
+    print(f"\nResults saved to {args.output}")
 
-    # Filter results for JSON serialization
-    json_results = []
-    for r in results:
-        jr = {}
-        for k, v in r.items():
-            if isinstance(v, (int, float, str, bool)):
-                jr[k] = v
-            elif isinstance(v, np.floating):
-                jr[k] = float(v)
-            elif isinstance(v, np.integer):
-                jr[k] = int(v)
-        json_results.append(jr)
 
-    with open(os.path.join(output_dir, 'results.json'), 'w') as f:
-        json.dump(json_results, f, indent=2, default=str)
-
-    with open(os.path.join(output_dir, 'summary.txt'), 'w') as f:
-        f.write(summary)
-
-    print(f"\nResults saved to {output_dir}/")
-    return results, et_results
-
-
-# ============================================================
-# Run if executed directly
-# ============================================================
-if __name__ == "__main__":
-    results, et_results = run_full_benchmark(
-        sizes=[20, 30, 50],
-        h_ratios=[0.5, 1.0, 2.0],
-        seeds_per=2
-    )
+if __name__ == '__main__':
+    main()
