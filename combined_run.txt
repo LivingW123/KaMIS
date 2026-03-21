@@ -3,20 +3,20 @@ COMBINED BENCHMARK SUMMARY
 ======================================================================
 
 --- Family: erdos_renyi ---
-  Exact_NX                      : avg_size=8.6, avg_recall=0.642, avg_time=0.002s (12 instances)
-  Greedy_MinDeg                 : avg_size=10.3, avg_recall=0.599, avg_time=0.001s (15 instances)
-  KaMIS_online_mis              : avg_size=10.7, avg_recall=0.558, avg_time=40.010s (15 instances)
-  KaMIS_redumis                 : avg_size=10.9, avg_recall=0.675, avg_time=30.178s (15 instances)
-  LocalSearch                   : avg_size=10.3, avg_recall=0.592, avg_time=0.001s (15 instances)
-  Spectral                      : avg_size=6.7, avg_recall=0.355, avg_time=0.009s (15 instances)
+  Exact_NX                      : avg_size=8.6, avg_recall=0.642, avg_time=0.003s (12 instances)
+  Greedy_MaxDegRemoval          : avg_size=34.0, avg_recall=0.318, avg_time=0.029s (45 instances)
+  Greedy_MinDeg                 : avg_size=37.5, avg_recall=0.327, avg_time=0.009s (45 instances)
+  LocalSearch                   : avg_size=37.9, avg_recall=0.330, avg_time=0.010s (45 instances)
+  SimulatedAnnealing            : avg_size=39.1, avg_recall=0.337, avg_time=0.074s (45 instances)
+  Spectral                      : avg_size=25.4, avg_recall=0.186, avg_time=0.064s (45 instances)
 
 --- Family: multi_clique_core ---
   Exact_NX                      : avg_size=9.3, avg_recall=1.000, avg_time=0.001s (9 instances)
-  Greedy_MinDeg                 : avg_size=9.3, avg_recall=1.000, avg_time=0.000s (9 instances)
-  KaMIS_online_mis              : avg_size=9.2, avg_recall=0.986, avg_time=31.119s (9 instances)
-  KaMIS_redumis                 : avg_size=9.3, avg_recall=1.000, avg_time=9.584s (9 instances)
-  LocalSearch                   : avg_size=9.3, avg_recall=1.000, avg_time=0.001s (9 instances)
-  Spectral                      : avg_size=5.3, avg_recall=0.422, avg_time=0.001s (9 instances)
+  Greedy_MaxDegRemoval          : avg_size=17.2, avg_recall=1.000, avg_time=0.023s (18 instances)
+  Greedy_MinDeg                 : avg_size=17.2, avg_recall=1.000, avg_time=0.014s (18 instances)
+  LocalSearch                   : avg_size=17.2, avg_recall=1.000, avg_time=0.014s (18 instances)
+  SimulatedAnnealing            : avg_size=17.2, avg_recall=1.000, avg_time=0.069s (18 instances)
+  Spectral                      : avg_size=12.1, avg_recall=0.556, avg_time=0.018s (18 instances)
 
 ======================================================================
 PER-INSTANCE DETAIL
@@ -24,167 +24,401 @@ PER-INSTANCE DETAIL
 Instance                                 Solver                  Size  Recall  Time(s) Valid
 ------------------------------------------------------------------------------------------
 erdos_renyi_n100_h10_p0.2_s123           Greedy_MinDeg             18   0.400    0.001     Y
-erdos_renyi_n100_h10_p0.2_s123           LocalSearch               19   0.300    0.002     Y
+erdos_renyi_n100_h10_p0.2_s123           Greedy_MaxDegRemoval      16   0.400    0.003     Y
+erdos_renyi_n100_h10_p0.2_s123           LocalSearch               19   0.300    0.001     Y
+erdos_renyi_n100_h10_p0.2_s123           SimulatedAnnealing        19   0.600    0.059     Y
 erdos_renyi_n100_h10_p0.2_s123           Spectral                  12   0.200    0.002     Y
-erdos_renyi_n100_h10_p0.2_s123           KaMIS_online_mis          19   0.300   40.008     Y
-erdos_renyi_n100_h10_p0.2_s123           KaMIS_redumis             19   0.300   27.790     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n100_h10_p0.2_s42            Greedy_MinDeg             20   0.400    0.001     Y
-erdos_renyi_n100_h10_p0.2_s42            LocalSearch               20   0.400    0.002     Y
+erdos_renyi_n100_h10_p0.2_s42            Greedy_MaxDegRemoval      17   0.400    0.003     Y
+erdos_renyi_n100_h10_p0.2_s42            LocalSearch               20   0.400    0.001     Y
+erdos_renyi_n100_h10_p0.2_s42            SimulatedAnnealing        21   0.300    0.062     Y
 erdos_renyi_n100_h10_p0.2_s42            Spectral                  10   0.200    0.002     Y
-erdos_renyi_n100_h10_p0.2_s42            KaMIS_online_mis          21   0.300   40.009     Y
-erdos_renyi_n100_h10_p0.2_s42            KaMIS_redumis             21   0.400   26.737     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n100_h10_p0.2_s456           Greedy_MinDeg             19   0.300    0.001     Y
-erdos_renyi_n100_h10_p0.2_s456           LocalSearch               19   0.300    0.002     Y
-erdos_renyi_n100_h10_p0.2_s456           Spectral                  15   0.400    0.014     Y
-erdos_renyi_n100_h10_p0.2_s456           KaMIS_online_mis          20   0.300   40.009     Y
-erdos_renyi_n100_h10_p0.2_s456           KaMIS_redumis             20   0.300   32.109     Y
+erdos_renyi_n100_h10_p0.2_s456           Greedy_MaxDegRemoval      17   0.300    0.003     Y
+erdos_renyi_n100_h10_p0.2_s456           LocalSearch               19   0.300    0.003     Y
+erdos_renyi_n100_h10_p0.2_s456           SimulatedAnnealing        20   0.300    0.060     Y
+erdos_renyi_n100_h10_p0.2_s456           Spectral                  15   0.400    0.001     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h12_p0.2_s123           Greedy_MinDeg             21   0.000    0.004     Y
+erdos_renyi_n200_h12_p0.2_s123           Greedy_MaxDegRemoval      21   0.083    0.011     Y
+erdos_renyi_n200_h12_p0.2_s123           LocalSearch               21   0.000    0.004     Y
+erdos_renyi_n200_h12_p0.2_s123           SimulatedAnnealing        23   0.000    0.068     Y
+erdos_renyi_n200_h12_p0.2_s123           Spectral                  16   0.000    0.003     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h12_p0.2_s42            Greedy_MinDeg             24   0.417    0.003     Y
+erdos_renyi_n200_h12_p0.2_s42            Greedy_MaxDegRemoval      21   0.250    0.014     Y
+erdos_renyi_n200_h12_p0.2_s42            LocalSearch               24   0.417    0.006     Y
+erdos_renyi_n200_h12_p0.2_s42            SimulatedAnnealing        24   0.417    0.065     Y
+erdos_renyi_n200_h12_p0.2_s42            Spectral                  13   0.083    0.003     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h12_p0.2_s456           Greedy_MinDeg             21   0.083    0.004     Y
+erdos_renyi_n200_h12_p0.2_s456           Greedy_MaxDegRemoval      20   0.167    0.010     Y
+erdos_renyi_n200_h12_p0.2_s456           LocalSearch               22   0.167    0.004     Y
+erdos_renyi_n200_h12_p0.2_s456           SimulatedAnnealing        25   0.167    0.071     Y
+erdos_renyi_n200_h12_p0.2_s456           Spectral                  13   0.000    0.015     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h15_p0.05_s123          Greedy_MinDeg             59   0.600    0.002     Y
+erdos_renyi_n200_h15_p0.05_s123          Greedy_MaxDegRemoval      55   0.667    0.008     Y
+erdos_renyi_n200_h15_p0.05_s123          LocalSearch               59   0.600    0.002     Y
+erdos_renyi_n200_h15_p0.05_s123          SimulatedAnnealing        61   0.733    0.068     Y
+erdos_renyi_n200_h15_p0.05_s123          Spectral                  28   0.133    0.001     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h15_p0.05_s42           Greedy_MinDeg             59   0.533    0.003     Y
+erdos_renyi_n200_h15_p0.05_s42           Greedy_MaxDegRemoval      59   0.467    0.007     Y
+erdos_renyi_n200_h15_p0.05_s42           LocalSearch               60   0.600    0.002     Y
+erdos_renyi_n200_h15_p0.05_s42           SimulatedAnnealing        62   0.267    0.065     Y
+erdos_renyi_n200_h15_p0.05_s42           Spectral                  46   0.533    0.001     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n200_h15_p0.05_s456          Greedy_MinDeg             58   0.467    0.003     Y
+erdos_renyi_n200_h15_p0.05_s456          Greedy_MaxDegRemoval      54   0.400    0.008     Y
+erdos_renyi_n200_h15_p0.05_s456          LocalSearch               60   0.467    0.003     Y
+erdos_renyi_n200_h15_p0.05_s456          SimulatedAnnealing        60   0.400    0.066     Y
+erdos_renyi_n200_h15_p0.05_s456          Spectral                  27   0.067    0.002     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n300_h14_p0.2_s123           Greedy_MinDeg             27   0.000    0.008     Y
+erdos_renyi_n300_h14_p0.2_s123           Greedy_MaxDegRemoval      20   0.071    0.025     Y
+erdos_renyi_n300_h14_p0.2_s123           LocalSearch               27   0.000    0.010     Y
+erdos_renyi_n300_h14_p0.2_s123           SimulatedAnnealing        27   0.000    0.076     Y
+erdos_renyi_n300_h14_p0.2_s123           Spectral                  18   0.071    0.006     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n300_h14_p0.2_s42            Greedy_MinDeg             27   0.000    0.008     Y
+erdos_renyi_n300_h14_p0.2_s42            Greedy_MaxDegRemoval      25   0.143    0.025     Y
+erdos_renyi_n300_h14_p0.2_s42            LocalSearch               27   0.000    0.009     Y
+erdos_renyi_n300_h14_p0.2_s42            SimulatedAnnealing        27   0.000    0.079     Y
+erdos_renyi_n300_h14_p0.2_s42            Spectral                  21   0.000    0.006     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n300_h14_p0.2_s456           Greedy_MinDeg             25   0.071    0.009     Y
+erdos_renyi_n300_h14_p0.2_s456           Greedy_MaxDegRemoval      22   0.143    0.023     Y
+erdos_renyi_n300_h14_p0.2_s456           LocalSearch               25   0.071    0.009     Y
+erdos_renyi_n300_h14_p0.2_s456           SimulatedAnnealing        25   0.071    0.078     Y
+erdos_renyi_n300_h14_p0.2_s456           Spectral                  14   0.000    0.017     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n300_h18_p0.05_s123          Greedy_MinDeg             71   0.111    0.004     Y
+erdos_renyi_n300_h18_p0.05_s123          Greedy_MaxDegRemoval      68   0.056    0.017     Y
+erdos_renyi_n300_h18_p0.05_s123          LocalSearch               71   0.111    0.005     Y
+erdos_renyi_n300_h18_p0.05_s123          SimulatedAnnealing        75   0.167    0.089     Y
+erdos_renyi_n300_h18_p0.05_s123          Spectral                  35   0.056    0.003     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n300_h18_p0.05_s42           Greedy_MinDeg             68   0.444    0.004     Y
+erdos_renyi_n300_h18_p0.05_s42           Greedy_MaxDegRemoval      64   0.278    0.017     Y
+erdos_renyi_n300_h18_p0.05_s42           LocalSearch               68   0.444    0.005     Y
+erdos_renyi_n300_h18_p0.05_s42           SimulatedAnnealing        71   0.278    0.083     Y
+erdos_renyi_n300_h18_p0.05_s42           Spectral                  43   0.111    0.003     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n300_h18_p0.05_s456          Greedy_MinDeg             74   0.333    0.004     Y
+erdos_renyi_n300_h18_p0.05_s456          Greedy_MaxDegRemoval      65   0.278    0.019     Y
+erdos_renyi_n300_h18_p0.05_s456          LocalSearch               74   0.333    0.005     Y
+erdos_renyi_n300_h18_p0.05_s456          SimulatedAnnealing        76   0.278    0.076     Y
+erdos_renyi_n300_h18_p0.05_s456          Spectral                  57   0.222    0.003     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n30_h5_p0.5_s123             Greedy_MinDeg              6   0.600    0.000     Y
+erdos_renyi_n30_h5_p0.5_s123             Greedy_MaxDegRemoval       4   0.000    0.001     Y
 erdos_renyi_n30_h5_p0.5_s123             LocalSearch                6   0.600    0.000     Y
-erdos_renyi_n30_h5_p0.5_s123             Spectral                   5   0.600    0.001     Y
+erdos_renyi_n30_h5_p0.5_s123             SimulatedAnnealing         6   0.600    0.046     Y
+erdos_renyi_n30_h5_p0.5_s123             Spectral                   5   0.600    0.000     Y
 erdos_renyi_n30_h5_p0.5_s123             Exact_NX                   6   0.400    0.001     Y
-erdos_renyi_n30_h5_p0.5_s123             KaMIS_online_mis           6   0.400   40.009     Y
-erdos_renyi_n30_h5_p0.5_s123             KaMIS_redumis              6   0.800   21.076     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n30_h5_p0.5_s42              Greedy_MinDeg              6   0.400    0.000     Y
-erdos_renyi_n30_h5_p0.5_s42              LocalSearch                6   0.400    0.001     Y
+erdos_renyi_n30_h5_p0.5_s42              Greedy_MaxDegRemoval       5   0.400    0.001     Y
+erdos_renyi_n30_h5_p0.5_s42              LocalSearch                6   0.400    0.000     Y
+erdos_renyi_n30_h5_p0.5_s42              SimulatedAnnealing         6   0.400    0.047     Y
 erdos_renyi_n30_h5_p0.5_s42              Spectral                   4   0.200    0.001     Y
-erdos_renyi_n30_h5_p0.5_s42              Exact_NX                   6   0.000    0.001     Y
-erdos_renyi_n30_h5_p0.5_s42              KaMIS_online_mis           6   0.400   40.008     Y
-erdos_renyi_n30_h5_p0.5_s42              KaMIS_redumis              6   0.600   19.915     Y
+erdos_renyi_n30_h5_p0.5_s42              Exact_NX                   6   0.000    0.000     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n30_h5_p0.5_s456             Greedy_MinDeg              6   0.200    0.000     Y
+erdos_renyi_n30_h5_p0.5_s456             Greedy_MaxDegRemoval       7   0.400    0.001     Y
 erdos_renyi_n30_h5_p0.5_s456             LocalSearch                6   0.200    0.000     Y
+erdos_renyi_n30_h5_p0.5_s456             SimulatedAnnealing         7   0.400    0.048     Y
 erdos_renyi_n30_h5_p0.5_s456             Spectral                   3   0.000    0.001     Y
 erdos_renyi_n30_h5_p0.5_s456             Exact_NX                   7   0.400    0.001     Y
-erdos_renyi_n30_h5_p0.5_s456             KaMIS_online_mis           7   0.400   40.009     Y
-erdos_renyi_n30_h5_p0.5_s456             KaMIS_redumis              7   0.400   20.802     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h16_p0.2_s123           Greedy_MinDeg             25   0.062    0.017     Y
+erdos_renyi_n400_h16_p0.2_s123           Greedy_MaxDegRemoval      23   0.000    0.043     Y
+erdos_renyi_n400_h16_p0.2_s123           LocalSearch               25   0.062    0.018     Y
+erdos_renyi_n400_h16_p0.2_s123           SimulatedAnnealing        27   0.125    0.086     Y
+erdos_renyi_n400_h16_p0.2_s123           Spectral                  21   0.062    0.022     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h16_p0.2_s42            Greedy_MinDeg             27   0.062    0.017     Y
+erdos_renyi_n400_h16_p0.2_s42            Greedy_MaxDegRemoval      22   0.188    0.044     Y
+erdos_renyi_n400_h16_p0.2_s42            LocalSearch               27   0.062    0.019     Y
+erdos_renyi_n400_h16_p0.2_s42            SimulatedAnnealing        30   0.188    0.083     Y
+erdos_renyi_n400_h16_p0.2_s42            Spectral                  22   0.125    0.011     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h16_p0.2_s456           Greedy_MinDeg             26   0.188    0.016     Y
+erdos_renyi_n400_h16_p0.2_s456           Greedy_MaxDegRemoval      23   0.125    0.044     Y
+erdos_renyi_n400_h16_p0.2_s456           LocalSearch               26   0.188    0.016     Y
+erdos_renyi_n400_h16_p0.2_s456           SimulatedAnnealing        28   0.062    0.089     Y
+erdos_renyi_n400_h16_p0.2_s456           Spectral                  17   0.062    0.022     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h20_p0.05_s123          Greedy_MinDeg             76   0.150    0.007     Y
+erdos_renyi_n400_h20_p0.05_s123          Greedy_MaxDegRemoval      75   0.200    0.036     Y
+erdos_renyi_n400_h20_p0.05_s123          LocalSearch               78   0.150    0.009     Y
+erdos_renyi_n400_h20_p0.05_s123          SimulatedAnnealing        80   0.300    0.082     Y
+erdos_renyi_n400_h20_p0.05_s123          Spectral                  62   0.050    0.003     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h20_p0.05_s42           Greedy_MinDeg             77   0.350    0.007     Y
+erdos_renyi_n400_h20_p0.05_s42           Greedy_MaxDegRemoval      73   0.100    0.031     Y
+erdos_renyi_n400_h20_p0.05_s42           LocalSearch               77   0.350    0.008     Y
+erdos_renyi_n400_h20_p0.05_s42           SimulatedAnnealing        80   0.300    0.081     Y
+erdos_renyi_n400_h20_p0.05_s42           Spectral                  37   0.050    0.004     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n400_h20_p0.05_s456          Greedy_MinDeg             78   0.150    0.008     Y
+erdos_renyi_n400_h20_p0.05_s456          Greedy_MaxDegRemoval      68   0.250    0.035     Y
+erdos_renyi_n400_h20_p0.05_s456          LocalSearch               81   0.150    0.010     Y
+erdos_renyi_n400_h20_p0.05_s456          SimulatedAnnealing        78   0.150    0.082     Y
+erdos_renyi_n400_h20_p0.05_s456          Spectral                  54   0.150    0.003     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n500_h18_p0.2_s123           Greedy_MinDeg             29   0.056    0.025     Y
+erdos_renyi_n500_h18_p0.2_s123           Greedy_MaxDegRemoval      22   0.167    0.063     Y
+erdos_renyi_n500_h18_p0.2_s123           LocalSearch               29   0.056    0.024     Y
+erdos_renyi_n500_h18_p0.2_s123           SimulatedAnnealing        30   0.000    0.095     Y
+erdos_renyi_n500_h18_p0.2_s123           Spectral                  24   0.000    0.031     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n500_h18_p0.2_s42            Greedy_MinDeg             28   0.056    0.025     Y
+erdos_renyi_n500_h18_p0.2_s42            Greedy_MaxDegRemoval      23   0.000    0.066     Y
+erdos_renyi_n500_h18_p0.2_s42            LocalSearch               28   0.056    0.028     Y
+erdos_renyi_n500_h18_p0.2_s42            SimulatedAnnealing        28   0.056    0.091     Y
+erdos_renyi_n500_h18_p0.2_s42            Spectral                  20   0.111    0.029     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n500_h18_p0.2_s456           Greedy_MinDeg             29   0.278    0.026     Y
+erdos_renyi_n500_h18_p0.2_s456           Greedy_MaxDegRemoval      22   0.056    0.063     Y
+erdos_renyi_n500_h18_p0.2_s456           LocalSearch               29   0.278    0.026     Y
+erdos_renyi_n500_h18_p0.2_s456           SimulatedAnnealing        29   0.278    0.095     Y
+erdos_renyi_n500_h18_p0.2_s456           Spectral                  17   0.000    0.036     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n500_h22_p0.05_s123          Greedy_MinDeg             82   0.000    0.013     Y
+erdos_renyi_n500_h22_p0.05_s123          Greedy_MaxDegRemoval      74   0.182    0.050     Y
+erdos_renyi_n500_h22_p0.05_s123          LocalSearch               82   0.000    0.012     Y
+erdos_renyi_n500_h22_p0.05_s123          SimulatedAnnealing        87   0.045    0.091     Y
+erdos_renyi_n500_h22_p0.05_s123          Spectral                  60   0.091    0.013     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n500_h22_p0.05_s42           Greedy_MinDeg             86   0.227    0.010     Y
+erdos_renyi_n500_h22_p0.05_s42           Greedy_MaxDegRemoval      74   0.091    0.047     Y
+erdos_renyi_n500_h22_p0.05_s42           LocalSearch               86   0.227    0.011     Y
+erdos_renyi_n500_h22_p0.05_s42           SimulatedAnnealing        87   0.136    0.089     Y
+erdos_renyi_n500_h22_p0.05_s42           Spectral                  64   0.136    0.004     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n500_h22_p0.05_s456          Greedy_MinDeg             84   0.455    0.012     Y
+erdos_renyi_n500_h22_p0.05_s456          Greedy_MaxDegRemoval      81   0.136    0.050     Y
+erdos_renyi_n500_h22_p0.05_s456          LocalSearch               84   0.455    0.012     Y
+erdos_renyi_n500_h22_p0.05_s456          SimulatedAnnealing        89   0.273    0.088     Y
+erdos_renyi_n500_h22_p0.05_s456          Spectral                  66   0.364    0.005     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n50_h10_p0.5_s123            Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.5_s123            Greedy_MaxDegRemoval      10   1.000    0.001     Y
 erdos_renyi_n50_h10_p0.5_s123            LocalSearch               10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.5_s123            SimulatedAnnealing        10   1.000    0.051     Y
 erdos_renyi_n50_h10_p0.5_s123            Spectral                   4   0.200    0.001     Y
-erdos_renyi_n50_h10_p0.5_s123            Exact_NX                  10   1.000    0.004     Y
-erdos_renyi_n50_h10_p0.5_s123            KaMIS_online_mis           9   0.900   40.008     Y
-erdos_renyi_n50_h10_p0.5_s123            KaMIS_redumis             10   1.000   28.963     Y
+erdos_renyi_n50_h10_p0.5_s123            Exact_NX                  10   1.000    0.005     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n50_h10_p0.5_s42             Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.5_s42             Greedy_MaxDegRemoval      10   0.900    0.001     Y
 erdos_renyi_n50_h10_p0.5_s42             LocalSearch               10   1.000    0.001     Y
-erdos_renyi_n50_h10_p0.5_s42             Spectral                   4   0.100    0.109     Y
+erdos_renyi_n50_h10_p0.5_s42             SimulatedAnnealing        10   1.000    0.050     Y
+erdos_renyi_n50_h10_p0.5_s42             Spectral                   4   0.100    2.459     Y
 erdos_renyi_n50_h10_p0.5_s42             Exact_NX                  10   0.900    0.004     Y
-erdos_renyi_n50_h10_p0.5_s42             KaMIS_online_mis          10   0.900   40.027     Y
-erdos_renyi_n50_h10_p0.5_s42             KaMIS_redumis             10   0.900   32.793     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n50_h10_p0.5_s456            Greedy_MinDeg              7   0.400    0.001     Y
-erdos_renyi_n50_h10_p0.5_s456            LocalSearch                7   0.400    0.001     Y
+erdos_renyi_n50_h10_p0.5_s456            Greedy_MaxDegRemoval       8   0.800    0.001     Y
+erdos_renyi_n50_h10_p0.5_s456            LocalSearch                7   0.400    0.000     Y
+erdos_renyi_n50_h10_p0.5_s456            SimulatedAnnealing        10   1.000    0.049     Y
 erdos_renyi_n50_h10_p0.5_s456            Spectral                   3   0.000    0.001     Y
 erdos_renyi_n50_h10_p0.5_s456            Exact_NX                  10   1.000    0.004     Y
-erdos_renyi_n50_h10_p0.5_s456            KaMIS_online_mis          10   1.000   40.010     Y
-erdos_renyi_n50_h10_p0.5_s456            KaMIS_redumis             10   1.000   22.426     Y
 ------------------------------------------------------------------------------------------
-erdos_renyi_n50_h10_p0.8_s123            Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s123            Greedy_MinDeg             10   1.000    0.000     Y
+erdos_renyi_n50_h10_p0.8_s123            Greedy_MaxDegRemoval      10   1.000    0.002     Y
 erdos_renyi_n50_h10_p0.8_s123            LocalSearch               10   1.000    0.001     Y
-erdos_renyi_n50_h10_p0.8_s123            Spectral                  10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s123            SimulatedAnnealing        10   1.000    0.069     Y
+erdos_renyi_n50_h10_p0.8_s123            Spectral                  10   1.000    0.002     Y
 erdos_renyi_n50_h10_p0.8_s123            Exact_NX                  10   1.000    0.001     Y
-erdos_renyi_n50_h10_p0.8_s123            KaMIS_online_mis          10   1.000   40.008     Y
-erdos_renyi_n50_h10_p0.8_s123            KaMIS_redumis             10   1.000   39.524     Y
 ------------------------------------------------------------------------------------------
-erdos_renyi_n50_h10_p0.8_s42             Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s42             Greedy_MinDeg             10   1.000    0.000     Y
+erdos_renyi_n50_h10_p0.8_s42             Greedy_MaxDegRemoval      10   1.000    0.002     Y
 erdos_renyi_n50_h10_p0.8_s42             LocalSearch               10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s42             SimulatedAnnealing        10   1.000    0.051     Y
 erdos_renyi_n50_h10_p0.8_s42             Spectral                  10   1.000    0.001     Y
-erdos_renyi_n50_h10_p0.8_s42             Exact_NX                  10   1.000    0.001     Y
-erdos_renyi_n50_h10_p0.8_s42             KaMIS_online_mis          10   1.000   40.011     Y
-erdos_renyi_n50_h10_p0.8_s42             KaMIS_redumis             10   1.000   40.225     Y
+erdos_renyi_n50_h10_p0.8_s42             Exact_NX                  10   1.000    0.002     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n50_h10_p0.8_s456            Greedy_MinDeg             10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s456            Greedy_MaxDegRemoval      10   1.000    0.002     Y
 erdos_renyi_n50_h10_p0.8_s456            LocalSearch               10   1.000    0.001     Y
-erdos_renyi_n50_h10_p0.8_s456            Spectral                  10   1.000    0.001     Y
+erdos_renyi_n50_h10_p0.8_s456            SimulatedAnnealing        10   1.000    0.054     Y
+erdos_renyi_n50_h10_p0.8_s456            Spectral                  10   1.000    0.002     Y
 erdos_renyi_n50_h10_p0.8_s456            Exact_NX                  10   1.000    0.001     Y
-erdos_renyi_n50_h10_p0.8_s456            KaMIS_online_mis           9   0.900   40.009     Y
-erdos_renyi_n50_h10_p0.8_s456            KaMIS_redumis             10   1.000   37.151     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n50_h7_p0.5_s123             Greedy_MinDeg              7   0.571    0.001     Y
+erdos_renyi_n50_h7_p0.5_s123             Greedy_MaxDegRemoval       7   0.429    0.001     Y
 erdos_renyi_n50_h7_p0.5_s123             LocalSearch                7   0.571    0.001     Y
+erdos_renyi_n50_h7_p0.5_s123             SimulatedAnnealing         8   0.143    0.050     Y
 erdos_renyi_n50_h7_p0.5_s123             Spectral                   5   0.286    0.001     Y
 erdos_renyi_n50_h7_p0.5_s123             Exact_NX                   8   0.143    0.004     Y
-erdos_renyi_n50_h7_p0.5_s123             KaMIS_online_mis           8   0.143   40.008     Y
-erdos_renyi_n50_h7_p0.5_s123             KaMIS_redumis              8   0.143   37.963     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n50_h7_p0.5_s42              Greedy_MinDeg              8   0.571    0.001     Y
-erdos_renyi_n50_h7_p0.5_s42              LocalSearch                8   0.571    0.001     Y
+erdos_renyi_n50_h7_p0.5_s42              Greedy_MaxDegRemoval       7   0.429    0.001     Y
+erdos_renyi_n50_h7_p0.5_s42              LocalSearch                8   0.571    0.000     Y
+erdos_renyi_n50_h7_p0.5_s42              SimulatedAnnealing         8   0.571    0.049     Y
 erdos_renyi_n50_h7_p0.5_s42              Spectral                   3   0.143    0.001     Y
 erdos_renyi_n50_h7_p0.5_s42              Exact_NX                   8   0.571    0.004     Y
-erdos_renyi_n50_h7_p0.5_s42              KaMIS_online_mis           8   0.000   40.013     Y
-erdos_renyi_n50_h7_p0.5_s42              KaMIS_redumis              8   0.857   30.020     Y
 ------------------------------------------------------------------------------------------
 erdos_renyi_n50_h7_p0.5_s456             Greedy_MinDeg              7   0.143    0.001     Y
+erdos_renyi_n50_h7_p0.5_s456             Greedy_MaxDegRemoval       7   0.571    0.001     Y
 erdos_renyi_n50_h7_p0.5_s456             LocalSearch                7   0.143    0.001     Y
+erdos_renyi_n50_h7_p0.5_s456             SimulatedAnnealing         8   0.429    0.048     Y
 erdos_renyi_n50_h7_p0.5_s456             Spectral                   2   0.000    0.001     Y
 erdos_renyi_n50_h7_p0.5_s456             Exact_NX                   8   0.286    0.004     Y
-erdos_renyi_n50_h7_p0.5_s456             KaMIS_online_mis           8   0.429   40.009     Y
-erdos_renyi_n50_h7_p0.5_s456             KaMIS_redumis              8   0.429   35.181     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n600_h20_p0.2_s123           Greedy_MinDeg             30   0.000    0.039     Y
+erdos_renyi_n600_h20_p0.2_s123           Greedy_MaxDegRemoval      26   0.050    0.097     Y
+erdos_renyi_n600_h20_p0.2_s123           LocalSearch               30   0.000    0.037     Y
+erdos_renyi_n600_h20_p0.2_s123           SimulatedAnnealing        30   0.000    0.109     Y
+erdos_renyi_n600_h20_p0.2_s123           Spectral                  22   0.200    0.040     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n600_h20_p0.2_s42            Greedy_MinDeg             27   0.050    0.034     Y
+erdos_renyi_n600_h20_p0.2_s42            Greedy_MaxDegRemoval      25   0.050    0.098     Y
+erdos_renyi_n600_h20_p0.2_s42            LocalSearch               32   0.050    0.044     Y
+erdos_renyi_n600_h20_p0.2_s42            SimulatedAnnealing        30   0.000    0.114     Y
+erdos_renyi_n600_h20_p0.2_s42            Spectral                  18   0.000    0.041     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n600_h20_p0.2_s456           Greedy_MinDeg             28   0.000    0.041     Y
+erdos_renyi_n600_h20_p0.2_s456           Greedy_MaxDegRemoval      24   0.100    0.093     Y
+erdos_renyi_n600_h20_p0.2_s456           LocalSearch               29   0.050    0.041     Y
+erdos_renyi_n600_h20_p0.2_s456           SimulatedAnnealing        30   0.050    0.107     Y
+erdos_renyi_n600_h20_p0.2_s456           Spectral                  22   0.000    0.041     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n600_h25_p0.05_s123          Greedy_MinDeg             87   0.160    0.014     Y
+erdos_renyi_n600_h25_p0.05_s123          Greedy_MaxDegRemoval      76   0.200    0.079     Y
+erdos_renyi_n600_h25_p0.05_s123          LocalSearch               88   0.160    0.016     Y
+erdos_renyi_n600_h25_p0.05_s123          SimulatedAnnealing        90   0.160    0.095     Y
+erdos_renyi_n600_h25_p0.05_s123          Spectral                  69   0.120    0.007     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n600_h25_p0.05_s42           Greedy_MinDeg             90   0.200    0.024     Y
+erdos_renyi_n600_h25_p0.05_s42           Greedy_MaxDegRemoval      81   0.160    0.075     Y
+erdos_renyi_n600_h25_p0.05_s42           LocalSearch               90   0.200    0.015     Y
+erdos_renyi_n600_h25_p0.05_s42           SimulatedAnnealing        92   0.320    0.100     Y
+erdos_renyi_n600_h25_p0.05_s42           Spectral                  47   0.040    0.017     Y
+------------------------------------------------------------------------------------------
+erdos_renyi_n600_h25_p0.05_s456          Greedy_MinDeg             92   0.240    0.012     Y
+erdos_renyi_n600_h25_p0.05_s456          Greedy_MaxDegRemoval      79   0.240    0.072     Y
+erdos_renyi_n600_h25_p0.05_s456          LocalSearch               92   0.240    0.016     Y
+erdos_renyi_n600_h25_p0.05_s456          SimulatedAnnealing        94   0.200    0.093     Y
+erdos_renyi_n600_h25_p0.05_s456          Spectral                  68   0.200    0.007     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n200_h20_q4_b3_s123    Greedy_MinDeg             20   1.000    0.010     Y
+multi_clique_core_n200_h20_q4_b3_s123    Greedy_MaxDegRemoval      20   1.000    0.017     Y
+multi_clique_core_n200_h20_q4_b3_s123    LocalSearch               20   1.000    0.011     Y
+multi_clique_core_n200_h20_q4_b3_s123    SimulatedAnnealing        20   1.000    0.069     Y
+multi_clique_core_n200_h20_q4_b3_s123    Spectral                   4   0.000    0.008     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n200_h20_q4_b3_s42     Greedy_MinDeg             20   1.000    0.015     Y
+multi_clique_core_n200_h20_q4_b3_s42     Greedy_MaxDegRemoval      20   1.000    0.036     Y
+multi_clique_core_n200_h20_q4_b3_s42     LocalSearch               20   1.000    0.011     Y
+multi_clique_core_n200_h20_q4_b3_s42     SimulatedAnnealing        20   1.000    0.065     Y
+multi_clique_core_n200_h20_q4_b3_s42     Spectral                  20   1.000    0.008     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n200_h20_q4_b3_s456    Greedy_MinDeg             20   1.000    0.012     Y
+multi_clique_core_n200_h20_q4_b3_s456    Greedy_MaxDegRemoval      20   1.000    0.036     Y
+multi_clique_core_n200_h20_q4_b3_s456    LocalSearch               20   1.000    0.012     Y
+multi_clique_core_n200_h20_q4_b3_s456    SimulatedAnnealing        20   1.000    0.070     Y
+multi_clique_core_n200_h20_q4_b3_s456    Spectral                  20   1.000    0.008     Y
 ------------------------------------------------------------------------------------------
 multi_clique_core_n20_h10_q3_b2_s123     Greedy_MinDeg             10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s123     Greedy_MaxDegRemoval      10   1.000    0.000     Y
 multi_clique_core_n20_h10_q3_b2_s123     LocalSearch               10   1.000    0.000     Y
-multi_clique_core_n20_h10_q3_b2_s123     Spectral                   8   0.800    0.001     Y
+multi_clique_core_n20_h10_q3_b2_s123     SimulatedAnnealing        10   1.000    0.045     Y
+multi_clique_core_n20_h10_q3_b2_s123     Spectral                   3   0.200    0.001     Y
 multi_clique_core_n20_h10_q3_b2_s123     Exact_NX                  10   1.000    0.000     Y
-multi_clique_core_n20_h10_q3_b2_s123     KaMIS_online_mis          10   1.000    0.007     Y
-multi_clique_core_n20_h10_q3_b2_s123     KaMIS_redumis             10   1.000    0.040     Y
 ------------------------------------------------------------------------------------------
-multi_clique_core_n20_h10_q3_b2_s42      Greedy_MinDeg             10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s42      Greedy_MinDeg             10   1.000    0.001     Y
+multi_clique_core_n20_h10_q3_b2_s42      Greedy_MaxDegRemoval      10   1.000    0.000     Y
 multi_clique_core_n20_h10_q3_b2_s42      LocalSearch               10   1.000    0.000     Y
-multi_clique_core_n20_h10_q3_b2_s42      Spectral                   2   0.100    0.001     Y
-multi_clique_core_n20_h10_q3_b2_s42      Exact_NX                  10   1.000    0.000     Y
-multi_clique_core_n20_h10_q3_b2_s42      KaMIS_online_mis          10   1.000   40.008     Y
-multi_clique_core_n20_h10_q3_b2_s42      KaMIS_redumis             10   1.000    0.032     Y
+multi_clique_core_n20_h10_q3_b2_s42      SimulatedAnnealing        10   1.000    0.048     Y
+multi_clique_core_n20_h10_q3_b2_s42      Spectral                   9   0.900    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s42      Exact_NX                  10   1.000    0.001     Y
 ------------------------------------------------------------------------------------------
 multi_clique_core_n20_h10_q3_b2_s456     Greedy_MinDeg             10   1.000    0.000     Y
+multi_clique_core_n20_h10_q3_b2_s456     Greedy_MaxDegRemoval      10   1.000    0.000     Y
 multi_clique_core_n20_h10_q3_b2_s456     LocalSearch               10   1.000    0.000     Y
-multi_clique_core_n20_h10_q3_b2_s456     Spectral                   9   0.900    0.001     Y
+multi_clique_core_n20_h10_q3_b2_s456     SimulatedAnnealing        10   1.000    0.044     Y
+multi_clique_core_n20_h10_q3_b2_s456     Spectral                   9   0.900    0.000     Y
 multi_clique_core_n20_h10_q3_b2_s456     Exact_NX                  10   1.000    0.000     Y
-multi_clique_core_n20_h10_q3_b2_s456     KaMIS_online_mis          10   1.000    0.007     Y
-multi_clique_core_n20_h10_q3_b2_s456     KaMIS_redumis             10   1.000    0.045     Y
 ------------------------------------------------------------------------------------------
-multi_clique_core_n30_h8_q3_b2_s123      Greedy_MinDeg              8   1.000    0.000     Y
-multi_clique_core_n30_h8_q3_b2_s123      LocalSearch                8   1.000    0.001     Y
-multi_clique_core_n30_h8_q3_b2_s123      Spectral                   8   1.000    0.001     Y
+multi_clique_core_n300_h25_q4_b3_s123    Greedy_MinDeg             25   1.000    0.023     Y
+multi_clique_core_n300_h25_q4_b3_s123    Greedy_MaxDegRemoval      25   1.000    0.040     Y
+multi_clique_core_n300_h25_q4_b3_s123    LocalSearch               25   1.000    0.032     Y
+multi_clique_core_n300_h25_q4_b3_s123    SimulatedAnnealing        25   1.000    0.089     Y
+multi_clique_core_n300_h25_q4_b3_s123    Spectral                   4   0.000    0.040     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n300_h25_q4_b3_s42     Greedy_MinDeg             25   1.000    0.024     Y
+multi_clique_core_n300_h25_q4_b3_s42     Greedy_MaxDegRemoval      25   1.000    0.040     Y
+multi_clique_core_n300_h25_q4_b3_s42     LocalSearch               25   1.000    0.024     Y
+multi_clique_core_n300_h25_q4_b3_s42     SimulatedAnnealing        25   1.000    0.091     Y
+multi_clique_core_n300_h25_q4_b3_s42     Spectral                   4   0.000    0.039     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n300_h25_q4_b3_s456    Greedy_MinDeg             25   1.000    0.024     Y
+multi_clique_core_n300_h25_q4_b3_s456    Greedy_MaxDegRemoval      25   1.000    0.049     Y
+multi_clique_core_n300_h25_q4_b3_s456    LocalSearch               25   1.000    0.026     Y
+multi_clique_core_n300_h25_q4_b3_s456    SimulatedAnnealing        25   1.000    0.089     Y
+multi_clique_core_n300_h25_q4_b3_s456    Spectral                  25   1.000    0.037     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n30_h8_q3_b2_s123      Greedy_MinDeg              8   1.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s123      Greedy_MaxDegRemoval       8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s123      LocalSearch                8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s123      SimulatedAnnealing         8   1.000    0.047     Y
+multi_clique_core_n30_h8_q3_b2_s123      Spectral                   2   0.000    0.001     Y
 multi_clique_core_n30_h8_q3_b2_s123      Exact_NX                   8   1.000    0.001     Y
-multi_clique_core_n30_h8_q3_b2_s123      KaMIS_online_mis           7   0.875   40.008     Y
-multi_clique_core_n30_h8_q3_b2_s123      KaMIS_redumis              8   1.000    0.049     Y
 ------------------------------------------------------------------------------------------
-multi_clique_core_n30_h8_q3_b2_s42       Greedy_MinDeg              8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s42       Greedy_MinDeg              8   1.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s42       Greedy_MaxDegRemoval       8   1.000    0.000     Y
 multi_clique_core_n30_h8_q3_b2_s42       LocalSearch                8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s42       SimulatedAnnealing         8   1.000    0.047     Y
 multi_clique_core_n30_h8_q3_b2_s42       Spectral                   3   0.000    0.001     Y
-multi_clique_core_n30_h8_q3_b2_s42       Exact_NX                   8   1.000    0.001     Y
-multi_clique_core_n30_h8_q3_b2_s42       KaMIS_online_mis           8   1.000   40.007     Y
-multi_clique_core_n30_h8_q3_b2_s42       KaMIS_redumis              8   1.000    0.052     Y
+multi_clique_core_n30_h8_q3_b2_s42       Exact_NX                   8   1.000    0.000     Y
 ------------------------------------------------------------------------------------------
 multi_clique_core_n30_h8_q3_b2_s456      Greedy_MinDeg              8   1.000    0.000     Y
+multi_clique_core_n30_h8_q3_b2_s456      Greedy_MaxDegRemoval       8   1.000    0.000     Y
 multi_clique_core_n30_h8_q3_b2_s456      LocalSearch                8   1.000    0.001     Y
+multi_clique_core_n30_h8_q3_b2_s456      SimulatedAnnealing         8   1.000    0.045     Y
 multi_clique_core_n30_h8_q3_b2_s456      Spectral                   2   0.000    0.001     Y
-multi_clique_core_n30_h8_q3_b2_s456      Exact_NX                   8   1.000    0.000     Y
-multi_clique_core_n30_h8_q3_b2_s456      KaMIS_online_mis           8   1.000   40.009     Y
-multi_clique_core_n30_h8_q3_b2_s456      KaMIS_redumis              8   1.000    0.057     Y
+multi_clique_core_n30_h8_q3_b2_s456      Exact_NX                   8   1.000    0.001     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n400_h30_q5_b3_s123    Greedy_MinDeg             30   1.000    0.042     Y
+multi_clique_core_n400_h30_q5_b3_s123    Greedy_MaxDegRemoval      30   1.000    0.064     Y
+multi_clique_core_n400_h30_q5_b3_s123    LocalSearch               30   1.000    0.041     Y
+multi_clique_core_n400_h30_q5_b3_s123    SimulatedAnnealing        30   1.000    0.115     Y
+multi_clique_core_n400_h30_q5_b3_s123    Spectral                  30   1.000    0.066     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n400_h30_q5_b3_s42     Greedy_MinDeg             30   1.000    0.042     Y
+multi_clique_core_n400_h30_q5_b3_s42     Greedy_MaxDegRemoval      30   1.000    0.062     Y
+multi_clique_core_n400_h30_q5_b3_s42     LocalSearch               30   1.000    0.041     Y
+multi_clique_core_n400_h30_q5_b3_s42     SimulatedAnnealing        30   1.000    0.112     Y
+multi_clique_core_n400_h30_q5_b3_s42     Spectral                  30   1.000    0.056     Y
+------------------------------------------------------------------------------------------
+multi_clique_core_n400_h30_q5_b3_s456    Greedy_MinDeg             30   1.000    0.048     Y
+multi_clique_core_n400_h30_q5_b3_s456    Greedy_MaxDegRemoval      30   1.000    0.061     Y
+multi_clique_core_n400_h30_q5_b3_s456    LocalSearch               30   1.000    0.044     Y
+multi_clique_core_n400_h30_q5_b3_s456    SimulatedAnnealing        30   1.000    0.112     Y
+multi_clique_core_n400_h30_q5_b3_s456    Spectral                  30   1.000    0.056     Y
 ------------------------------------------------------------------------------------------
 multi_clique_core_n50_h10_q3_b2_s123     Greedy_MinDeg             10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s123     Greedy_MaxDegRemoval      10   1.000    0.001     Y
 multi_clique_core_n50_h10_q3_b2_s123     LocalSearch               10   1.000    0.001     Y
-multi_clique_core_n50_h10_q3_b2_s123     Spectral                   3   0.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s123     SimulatedAnnealing        10   1.000    0.050     Y
+multi_clique_core_n50_h10_q3_b2_s123     Spectral                   3   0.000    0.002     Y
 multi_clique_core_n50_h10_q3_b2_s123     Exact_NX                  10   1.000    0.001     Y
-multi_clique_core_n50_h10_q3_b2_s123     KaMIS_online_mis          10   1.000   40.010     Y
-multi_clique_core_n50_h10_q3_b2_s123     KaMIS_redumis             10   1.000   17.781     Y
 ------------------------------------------------------------------------------------------
 multi_clique_core_n50_h10_q3_b2_s42      Greedy_MinDeg             10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s42      Greedy_MaxDegRemoval      10   1.000    0.001     Y
 multi_clique_core_n50_h10_q3_b2_s42      LocalSearch               10   1.000    0.001     Y
-multi_clique_core_n50_h10_q3_b2_s42      Spectral                   3   0.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s42      SimulatedAnnealing        10   1.000    0.048     Y
+multi_clique_core_n50_h10_q3_b2_s42      Spectral                  10   1.000    0.001     Y
 multi_clique_core_n50_h10_q3_b2_s42      Exact_NX                  10   1.000    0.001     Y
-multi_clique_core_n50_h10_q3_b2_s42      KaMIS_online_mis          10   1.000   40.007     Y
-multi_clique_core_n50_h10_q3_b2_s42      KaMIS_redumis             10   1.000   34.080     Y
 ------------------------------------------------------------------------------------------
 multi_clique_core_n50_h10_q3_b2_s456     Greedy_MinDeg             10   1.000    0.001     Y
+multi_clique_core_n50_h10_q3_b2_s456     Greedy_MaxDegRemoval      10   1.000    0.001     Y
 multi_clique_core_n50_h10_q3_b2_s456     LocalSearch               10   1.000    0.001     Y
-multi_clique_core_n50_h10_q3_b2_s456     Spectral                  10   1.000    0.002     Y
+multi_clique_core_n50_h10_q3_b2_s456     SimulatedAnnealing        10   1.000    0.050     Y
+multi_clique_core_n50_h10_q3_b2_s456     Spectral                  10   1.000    0.001     Y
 multi_clique_core_n50_h10_q3_b2_s456     Exact_NX                  10   1.000    0.001     Y
-multi_clique_core_n50_h10_q3_b2_s456     KaMIS_online_mis          10   1.000   40.008     Y
-multi_clique_core_n50_h10_q3_b2_s456     KaMIS_redumis             10   1.000   34.116     Y
 ------------------------------------------------------------------------------------------

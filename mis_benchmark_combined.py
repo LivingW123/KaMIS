@@ -164,6 +164,57 @@ def greedy_min_degree(G: nx.Graph) -> Set[int]:
     return mis
 
 
+def greedy_max_degree_removal(G: nx.Graph) -> Set[int]:
+    """Repeatedly remove the highest-degree vertex (and its edges) until
+    the remaining graph has no edges, then return all remaining vertices.
+    This mimics the inexact reduction heuristic: high-degree vertices are
+    unlikely to be in the MIS, so strip them first."""
+    H = G.copy()
+    while H.number_of_edges() > 0:
+        v = max(H.nodes(), key=lambda x: H.degree(x))
+        H.remove_node(v)
+    return set(H.nodes())
+
+
+def simulated_annealing_mis(G: nx.Graph, max_iter: int = 20000,
+                            T0: float = 2.0, alpha: float = 0.9995,
+                            seed: int = 42) -> Set[int]:
+    """SA for MIS: start from a greedy solution, perturb by adding/removing
+    vertices, accept worsening moves with Boltzmann probability."""
+    rng = np.random.RandomState(seed)
+    adj = {v: set(G.neighbors(v)) for v in G.nodes()}
+    nodes = list(G.nodes())
+
+    # Start from greedy solution
+    current = set(greedy_min_degree(G))
+    best = set(current)
+    T = T0
+
+    for _ in range(max_iter):
+        v = nodes[rng.randint(len(nodes))]
+
+        if v in current:
+            # Try removing v
+            candidate = current - {v}
+            delta = -1
+        else:
+            # Try adding v — must kick conflicting neighbors
+            conflicts = adj[v] & current
+            candidate = (current - conflicts) | {v}
+            delta = 1 - len(conflicts)
+
+        # Accept if improvement, or probabilistically if worsening
+        if delta > 0 or rng.random() < np.exp(delta / max(T, 1e-10)):
+            current = candidate
+
+        if len(current) > len(best):
+            best = set(current)
+
+        T *= alpha
+
+    return best
+
+
 def local_search_1_2_swap(G: nx.Graph, init_mis: Set[int],
                           max_iter: int = 5000) -> Set[int]:
     adj = {v: set(G.neighbors(v)) for v in G.nodes()}
@@ -218,7 +269,7 @@ def spectral_mis(G: nx.Graph) -> Set[int]:
 
 
 def exact_mis_small(G: nx.Graph) -> Set[int]:
-    if G.number_of_nodes() > 60:
+    if G.number_of_nodes() > 80:
         return set()
     complement = nx.complement(G)
     cliques = list(nx.find_cliques(complement))
@@ -310,10 +361,12 @@ def run_all_solvers(inst: MISInstance, kamis: KaMISRunner) -> List[SolverResult]
     results = []
     solvers_py = {
         'Greedy_MinDeg': lambda: greedy_min_degree(G),
+        'Greedy_MaxDegRemoval': lambda: greedy_max_degree_removal(G),
         'LocalSearch': lambda: local_search_1_2_swap(G, greedy_min_degree(G)),
+        'SimulatedAnnealing': lambda: simulated_annealing_mis(G),
         'Spectral': lambda: spectral_mis(G),
     }
-    if inst.n <= 60:
+    if inst.n <= 80:
         solvers_py['Exact_NX'] = lambda: exact_mis_small(G)
     for name, solver_fn in solvers_py.items():
         t0 = time.time()
@@ -331,7 +384,7 @@ def run_all_solvers(inst: MISInstance, kamis: KaMISRunner) -> List[SolverResult]
         ))
     for solver_name in ['online_mis', 'redumis']:
         if solver_name in kamis.binaries:
-            tl = 40.0 if inst.n <= 100 else 100.0
+            tl = 40.0 if inst.n <= 100 else (60.0 if inst.n <= 300 else 120.0)
             mis, elapsed = kamis.solve(G, solver_name, time_limit=tl)
             if mis:
                 overlap = len(mis & inst.planted_set)
@@ -446,16 +499,30 @@ def main():
         ]
     else:
         configs = [
-            # From mis_benchmark.py default
+            # Small graphs (original defaults)
             ('erdos_renyi',  50, 10, {'p': 0.5}),
             ('erdos_renyi',  50, 10, {'p': 0.8}),
             ('erdos_renyi', 100, 10, {'p': 0.2}),
-            ('multi_clique_core', 20, 10, {'q': 3, 'b': 2, 'p_inter': 0.3, 'p_cam': 0.2}),
-            ('multi_clique_core', 50, 10, {'q': 3, 'b': 2, 'p_inter': 0.6, 'p_cam': 0.5}),
-            # From mis_benchmark2.py default (different n values)
             ('erdos_renyi',  30,  5, {'p': 0.5}),
             ('erdos_renyi',  50,  7, {'p': 0.5}),
-            ('multi_clique_core', 30,  8, {'q': 3, 'b': 2, 'p_inter': 0.5, 'p_cam': 0.3}),
+            # Larger graphs: n=200..600 (sparse p=0.05, moderate p=0.2)
+            ('erdos_renyi', 200, 15, {'p': 0.05}),
+            ('erdos_renyi', 300, 18, {'p': 0.05}),
+            ('erdos_renyi', 400, 20, {'p': 0.05}),
+            ('erdos_renyi', 500, 22, {'p': 0.05}),
+            ('erdos_renyi', 600, 25, {'p': 0.05}),
+            ('erdos_renyi', 200, 12, {'p': 0.2}),
+            ('erdos_renyi', 300, 14, {'p': 0.2}),
+            ('erdos_renyi', 400, 16, {'p': 0.2}),
+            ('erdos_renyi', 500, 18, {'p': 0.2}),
+            ('erdos_renyi', 600, 20, {'p': 0.2}),
+            # Multi-clique-core (original + larger)
+            ('multi_clique_core',  20, 10, {'q': 3, 'b': 2, 'p_inter': 0.3, 'p_cam': 0.2}),
+            ('multi_clique_core',  50, 10, {'q': 3, 'b': 2, 'p_inter': 0.6, 'p_cam': 0.5}),
+            ('multi_clique_core',  30,  8, {'q': 3, 'b': 2, 'p_inter': 0.5, 'p_cam': 0.3}),
+            ('multi_clique_core', 200, 20, {'q': 4, 'b': 3, 'p_inter': 0.5, 'p_cam': 0.3}),
+            ('multi_clique_core', 300, 25, {'q': 4, 'b': 3, 'p_inter': 0.5, 'p_cam': 0.3}),
+            ('multi_clique_core', 400, 30, {'q': 5, 'b': 3, 'p_inter': 0.5, 'p_cam': 0.3}),
         ]
 
     all_results = {}
