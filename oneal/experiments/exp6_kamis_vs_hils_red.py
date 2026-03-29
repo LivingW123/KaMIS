@@ -120,7 +120,7 @@ def analyze_exp6(results_file: str = OUTPUT_FILE) -> None:
             gap_by_np[(n, p)].append(kamis_sz - hils_sz)
 
     crossover_n: Dict = defaultdict(list)
-    for (n, p), gaps in sorted(gap_by_np.items()):
+    for (n, p), gaps in sorted(gap_by_np.items(), key=lambda kv: (kv[0][0], kv[0][1] if kv[0][1] is not None else -1.0)):
         avg_gap = np.mean(gaps)
         print(f"  n={n:5d} p={str(p):6s}: avg_gap={avg_gap:+.1f}  "
               f"redumis_wins={sum(g>0 for g in gaps)}/{len(gaps)}")
@@ -128,8 +128,8 @@ def analyze_exp6(results_file: str = OUTPUT_FILE) -> None:
             crossover_n[p].append(n)
 
     print("\n--- Crossover n (where redumis gap <= 0.5 nodes) by p ---")
-    for p, ns in sorted(crossover_n.items()):
-        print(f"  p={p}: crossover at n <= {max(ns) if ns else '—'}")
+    for p, ns in sorted(crossover_n.items(), key=lambda kv: (kv[0] if kv[0] is not None else -1.0)):
+        print(f"  p={p}: crossover at n <= {max(ns) if ns else 'n/a'}")
 
 
 if __name__ == "__main__":

@@ -539,7 +539,7 @@ def print_comparison_table(
             if vals:
                 row += f"{np.mean(vals):>14.3f}"
             else:
-                row += f"{'—':>14s}"
+                row += f"{'n/a':>14s}"
         print(row)
 
 

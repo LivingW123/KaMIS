@@ -154,7 +154,7 @@ def analyze_exp1(results_file: str = OUTPUT_FILE) -> None:
 
     print("\n--- online_mis / redumis size ratio (>1 = online wins) ---")
     print(f"  {'(n, p)':20s}  {'ratio':>8s}")
-    for key in sorted(ratio):
+    for key in sorted(ratio, key=lambda k: (k[0], k[1] if k[1] is not None else -1.0)):
         vals = ratio[key]
         print(f"  {str(key):20s}  {np.mean(vals):8.3f}")
 
