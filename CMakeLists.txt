@@ -221,3 +221,7 @@ install(TARGETS online_mis DESTINATION bin)
 add_executable(graph_complement app/graph_complement.cpp $<TARGET_OBJECTS:libkaffpa> $<TARGET_OBJECTS:libfiles>)
 target_link_libraries(graph_complement ${OpenMP_CXX_LIBRARIES})
 install(TARGETS graph_complement DESTINATION bin)
+
+add_executable(max_clique app/max_clique.cpp $<TARGET_OBJECTS:libkaffpa> $<TARGET_OBJECTS:libfiles>)
+target_link_libraries(max_clique ${OpenMP_CXX_LIBRARIES})
+install(TARGETS max_clique DESTINATION bin)
