@@ -184,6 +184,8 @@ def _vnd_omega_1_swap(state: HilsState, config: HilsConfig) -> bool:
     """
     improved = False
     for v in state.nodes:
+        if state.elapsed() >= config.time_limit:
+            break
         if v in state.solution:
             continue
         s_nbrs = [u for u in state.adj[v] if u in state.solution]
@@ -198,7 +200,7 @@ def _vnd_omega_1_swap(state: HilsState, config: HilsConfig) -> bool:
 
 # ── Neighbourhood N2: (1,2)-swap  ────────────────────────────────────────────
 
-def _vnd_1_2_swap(state: HilsState) -> bool:
+def _vnd_1_2_swap(state: HilsState, config: HilsConfig = None) -> bool:
     """
     For each one-tight non-solution node u (has exactly one S-neighbor v):
       Remove v, look for two free nodes x, y (non-adjacent) with w(x)+w(y) > w(v).
@@ -209,6 +211,8 @@ def _vnd_1_2_swap(state: HilsState) -> bool:
     improved = False
     one_tight = state.one_tight_nodes()
     for u in one_tight:
+        if config is not None and state.elapsed() >= config.time_limit:
+            break
         if u in state.solution:
             continue
         if state.tight_count.get(u, 0) != 1:
@@ -269,13 +273,16 @@ def _local_search(
     """
     Variable Neighbourhood Descent (VND) over N1 and N2.
     Restart from N1 whenever any improvement is found.
+    Respects time_limit to prevent runaway on dense graphs.
     """
     k = 1
     while k <= 2:
+        if state.elapsed() >= config.time_limit:
+            break
         if k == 1:
             improved = _vnd_omega_1_swap(state, config)
         else:
-            improved = _vnd_1_2_swap(state)
+            improved = _vnd_1_2_swap(state, config)
 
         if improved:
             k = 1

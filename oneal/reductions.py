@@ -51,10 +51,12 @@ class ReducibleGraph:
                    is_status=is_status, n_original=n, next_node_id=next_id)
 
     def degree(self, v: int) -> int:
-        return len(self.adj.get(v, set()) & self.active)
+        # adj is kept clean by remove_node, no need to intersect with active
+        return len(self.adj.get(v, set()))
 
     def neighbors(self, v: int) -> Set[int]:
-        return self.adj.get(v, set()) & self.active
+        # adj is kept clean by remove_node, no need to intersect with active
+        return self.adj.get(v, set())
 
     def remove_node(self, v: int) -> None:
         """Remove v from active set and from all neighbor adjacency lists."""
@@ -207,21 +209,29 @@ def apply_weighted_domination(
 ) -> bool:
     """
     If N[u] ⊆ N[v] and w(u) <= w(v), remove u (dominated by v).
-    Only checks pairs (u, v) where v ∈ N(u) and deg(v) <= deg(u).
+    Only checks pairs (u, v) where v ∈ N(u) and deg(v) >= deg(u).
     """
     fired = False
     candidates = list(g.active)
     for u in candidates:
         if u not in g.active:
             continue
-        Nu_closed = g.neighbors(u) | {u}
+        nbrs_u = g.neighbors(u)
+        deg_u = len(nbrs_u)
+        Nu_closed = nbrs_u | {u}
         # Check each neighbor v of u as potential dominator
-        for v in list(g.neighbors(u)):
+        for v in list(nbrs_u):
             if v not in g.active:
+                continue
+            # Degree pruning: N[u] ⊆ N[v] requires deg(v) >= deg(u)
+            if g.degree(v) < deg_u:
+                continue
+            # Weight pruning: need w(u) <= w(v)
+            if g.weights[u] > g.weights[v]:
                 continue
             Nv_closed = g.neighbors(v) | {v}
             # v dominates u iff N[u] ⊆ N[v] and w(u) <= w(v)
-            if Nu_closed <= Nv_closed and g.weights[u] <= g.weights[v]:
+            if Nu_closed <= Nv_closed:
                 stack.append(UndoWeightedDomination(dominated=u, dominator=v))
                 g.exclude_from_is(u)
                 fired = True
