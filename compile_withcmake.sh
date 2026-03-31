@@ -42,5 +42,7 @@ cp ./build/online_mis deploy/
 cp ./build/wmis/branch_reduce  deploy/weighted_branch_reduce
 #cp ./build/wmis/merge_graph_weights deploy/
 cp ./build/wmis/weighted_ls deploy/weighted_local_search
+cp ./build/graph_complement deploy/
+cp ./build/max_clique deploy/
 
 rm -rf build

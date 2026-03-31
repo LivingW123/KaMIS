@@ -1,0 +1,189 @@
+{
+  "schema_version": "1.0",
+  "results": [
+    {
+      "experiment": "exp7_maxclique_vs_hils",
+      "instance_id": "erdos_renyi_n100_h10_p0.2_s42",
+      "family": "erdos_renyi",
+      "n": 100,
+      "h": 10,
+      "params": {
+        "p": 0.2
+      },
+      "seed": 42,
+      "num_edges": 950,
+      "solver": "MaxCLQ_complement",
+      "solution_size": 21,
+      "overlap_with_planted": 3,
+      "recall": 0.3,
+      "solution_weight": null,
+      "total_weight_planted": null,
+      "weight_recall": null,
+      "runtime": 0.12717556953430176,
+      "time_limit": 30.0,
+      "verified": true,
+      "notes": ""
+    },
+    {
+      "experiment": "exp7_maxclique_vs_hils",
+      "instance_id": "erdos_renyi_n100_h10_p0.2_s42",
+      "family": "erdos_renyi",
+      "n": 100,
+      "h": 10,
+      "params": {
+        "p": 0.2
+      },
+      "seed": 42,
+      "num_edges": 950,
+      "solver": "KaMIS_redumis",
+      "solution_size": 21,
+      "overlap_with_planted": 4,
+      "recall": 0.4,
+      "solution_weight": null,
+      "total_weight_planted": null,
+      "weight_recall": null,
+      "runtime": 27.45558452606201,
+      "time_limit": 30.0,
+      "verified": true,
+      "notes": ""
+    },
+    {
+      "experiment": "exp7_maxclique_vs_hils",
+      "instance_id": "erdos_renyi_n100_h10_p0.2_s42",
+      "family": "erdos_renyi",
+      "n": 100,
+      "h": 10,
+      "params": {
+        "p": 0.2
+      },
+      "seed": 42,
+      "num_edges": 950,
+      "solver": "KaMIS_online_mis",
+      "solution_size": 21,
+      "overlap_with_planted": 4,
+      "recall": 0.4,
+      "solution_weight": null,
+      "total_weight_planted": null,
+      "weight_recall": null,
+      "runtime": 30.09213614463806,
+      "time_limit": 30.0,
+      "verified": true,
+      "notes": ""
+    },
+    {
+      "experiment": "exp7_maxclique_vs_hils",
+      "instance_id": "erdos_renyi_n100_h10_p0.2_s42",
+      "family": "erdos_renyi",
+      "n": 100,
+      "h": 10,
+      "params": {
+        "p": 0.2
+      },
+      "seed": 42,
+      "num_edges": 950,
+      "solver": "Python_RedHILS",
+      "solution_size": 21,
+      "overlap_with_planted": 4,
+      "recall": 0.4,
+      "solution_weight": null,
+      "total_weight_planted": null,
+      "weight_recall": null,
+      "runtime": 30.00216293334961,
+      "time_limit": 30.0,
+      "verified": true,
+      "notes": ""
+    },
+    {
+      "experiment": "exp7_maxclique_vs_hils",
+      "instance_id": "erdos_renyi_n100_h10_p0.2_s123",
+      "family": "erdos_renyi",
+      "n": 100,
+      "h": 10,
+      "params": {
+        "p": 0.2
+      },
+      "seed": 123,
+      "num_edges": 1013,
+      "solver": "MaxCLQ_complement",
+      "solution_size": 19,
+      "overlap_with_planted": 5,
+      "recall": 0.5,
+      "solution_weight": null,
+      "total_weight_planted": null,
+      "weight_recall": null,
+      "runtime": 0.12503457069396973,
+      "time_limit": 30.0,
+      "verified": true,
+      "notes": ""
+    },
+    {
+      "experiment": "exp7_maxclique_vs_hils",
+      "instance_id": "erdos_renyi_n100_h10_p0.2_s123",
+      "family": "erdos_renyi",
+      "n": 100,
+      "h": 10,
+      "params": {
+        "p": 0.2
+      },
+      "seed": 123,
+      "num_edges": 1013,
+      "solver": "KaMIS_redumis",
+      "solution_size": 19,
+      "overlap_with_planted": 3,
+      "recall": 0.3,
+      "solution_weight": null,
+      "total_weight_planted": null,
+      "weight_recall": null,
+      "runtime": 28.604355812072754,
+      "time_limit": 30.0,
+      "verified": true,
+      "notes": ""
+    },
+    {
+      "experiment": "exp7_maxclique_vs_hils",
+      "instance_id": "erdos_renyi_n100_h10_p0.2_s123",
+      "family": "erdos_renyi",
+      "n": 100,
+      "h": 10,
+      "params": {
+        "p": 0.2
+      },
+      "seed": 123,
+      "num_edges": 1013,
+      "solver": "KaMIS_online_mis",
+      "solution_size": 19,
+      "overlap_with_planted": 5,
+      "recall": 0.5,
+      "solution_weight": null,
+      "total_weight_planted": null,
+      "weight_recall": null,
+      "runtime": 30.016186475753784,
+      "time_limit": 30.0,
+      "verified": true,
+      "notes": ""
+    },
+    {
+      "experiment": "exp7_maxclique_vs_hils",
+      "instance_id": "erdos_renyi_n100_h10_p0.2_s123",
+      "family": "erdos_renyi",
+      "n": 100,
+      "h": 10,
+      "params": {
+        "p": 0.2
+      },
+      "seed": 123,
+      "num_edges": 1013,
+      "solver": "Python_RedHILS",
+      "solution_size": 19,
+      "overlap_with_planted": 7,
+      "recall": 0.7,
+      "solution_weight": null,
+      "total_weight_planted": null,
+      "weight_recall": null,
+      "runtime": 30.002323865890503,
+      "time_limit": 30.0,
+      "verified": true,
+      "notes": ""
+    }
+  ]
+}

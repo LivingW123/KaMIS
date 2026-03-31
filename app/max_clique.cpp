@@ -107,6 +107,9 @@ static vector<Bitset> ADJ;     // adjacency bitsets
 static int best_size;
 static vector<int> best_clique;
 static long long nodes_explored;
+static chrono::steady_clock::time_point start_time;
+static double time_limit_sec;
+static bool timed_out;
 
 // ═══ Greedy Coloring ══════════════════════════════════════════════════════
 // Partition 'verts' into independent sets (= graph coloring).
@@ -322,6 +325,17 @@ static int overestimation(const Bitset& verts) {
 static void maxclq(const Bitset& verts, vector<int>& current_clique) {
         nodes_explored++;
 
+        // Time limit check
+        if (time_limit_sec > 0 && (nodes_explored & 0xFF) == 0) {
+                auto now = chrono::steady_clock::now();
+                double elapsed = chrono::duration<double>(now - start_time).count();
+                if (elapsed >= time_limit_sec) {
+                        timed_out = true;
+                        return;
+                }
+        }
+        if (timed_out) return;
+
         if (verts.empty()) {
                 if ((int)current_clique.size() > best_size) {
                         best_size = (int)current_clique.size();
@@ -364,20 +378,25 @@ int main(int argc, char** argv) {
         if (argc < 2) {
                 cout << "Usage: max_clique INPUT_FILE [--complement] [--output FILE]" << endl;
                 cout << endl;
-                cout << "  --complement  Complement graph internally (solves MIS via max clique)" << endl;
-                cout << "  --output FILE Write 0/1 solution vector to FILE" << endl;
+                cout << "  --complement    Complement graph internally (solves MIS via max clique)" << endl;
+                cout << "  --output FILE   Write 0/1 solution vector to FILE" << endl;
+                cout << "  --time_limit=N  Time limit in seconds (0 = unlimited, default)" << endl;
                 exit(1);
         }
 
         string filename(argv[1]);
         bool complement = false;
         string output_file;
+        time_limit_sec = 0;
 
         for (int i = 2; i < argc; i++) {
-                if (string(argv[i]) == "--complement") {
+                string arg(argv[i]);
+                if (arg == "--complement") {
                         complement = true;
-                } else if (string(argv[i]) == "--output" && i + 1 < argc) {
+                } else if (arg == "--output" && i + 1 < argc) {
                         output_file = string(argv[++i]);
+                } else if (arg.rfind("--time_limit=", 0) == 0) {
+                        time_limit_sec = atof(arg.substr(13).c_str());
                 }
         }
 
@@ -419,8 +438,13 @@ int main(int argc, char** argv) {
         // Solve
         best_size = 0;
         nodes_explored = 0;
+        timed_out = false;
+
+        if (time_limit_sec > 0)
+                cout << "Time limit: " << time_limit_sec << "s" << endl;
 
         auto t0 = chrono::steady_clock::now();
+        start_time = t0;
 
         Bitset all_verts(N);
         for (int i = 0; i < N; i++) all_verts.set(i);
@@ -443,6 +467,10 @@ int main(int argc, char** argv) {
         cout << endl;
         cout << "Nodes explored: " << nodes_explored << endl;
         cout << "Time: " << elapsed << "s" << endl;
+        if (timed_out)
+                cout << "Status: TIMED_OUT (best so far)" << endl;
+        else
+                cout << "Status: OPTIMAL" << endl;
 
         // Write solution file (0/1 per vertex)
         if (!output_file.empty()) {
